@@ -18,7 +18,7 @@ public class NetworkMapSceneManager : NetworkBehaviour
     public BattleUIRoot battleUIRoot;
     public BattleManager battleManager;
     public MapUIRoot mapUIRoot;
-
+    public TextMeshProUGUI upText;
     public bool isBattle;
     private void Awake()
     {
@@ -49,7 +49,8 @@ public class NetworkMapSceneManager : NetworkBehaviour
             {
                 obj.transform.position = new Vector2(2.8f, -2.2f);
             }
-
+            var objP = obj.GetComponent<Player>();
+            objP.characterId.Value = conn.FirstObject.GetComponent<NetworkPlayer>().characterId.Value;
             // 分配 Owner
             InstanceFinder.ServerManager.Spawn(obj, conn);
             i++;
@@ -94,7 +95,7 @@ public class NetworkMapSceneManager : NetworkBehaviour
     public void SpawnEnemyTest()
     {
         var e = Instantiate(Dic.Instance.enemies[0]);
-        e.gameObject.transform.position = new Vector2(6.5f, 3f);
+        e.gameObject.transform.position = new Vector2(6.5f, 2.7f);
         InstanceFinder.ServerManager.Spawn(e);
     }
     [Server]
@@ -132,6 +133,7 @@ public class NetworkMapSceneManager : NetworkBehaviour
     [ObserversRpc]
     public void UnEnableBattleChildren()
     {
+        Debug.Log("关闭战斗UI");
         foreach (Transform child in battleUIRoot.transform)
         {
             child.gameObject.SetActive(false);

@@ -44,6 +44,7 @@ public class BattleManager : NetworkBehaviour
         player = InstanceFinder.ClientManager.Connection.FirstObject.GetComponent<NetworkPlayer>();
         agreeCount.OnChange += AgreeCount_OnChange;
         turnState.OnChange += TurnState_OnChange;
+        turnCount.OnChange += TurnCount_OnChange;
         Instance = this;
     }
 
@@ -168,6 +169,7 @@ public class BattleManager : NetworkBehaviour
     public void ServerPlayerTurnStart()
     {
         ClientPlayerTurnStart();
+        turnCount.Value++;
         NextState();
     }
     [ObserversRpc]
@@ -285,6 +287,19 @@ public class BattleManager : NetworkBehaviour
         _turnState = turnState.Value;
         // Debug.Log("Debug:回合阶段改变为" + turnState.Value.ToString());
     }
+    private void TurnCount_OnChange(int prev, int next, bool asServer)
+    {
+        _turnCount = turnCount.Value;
+        if (turnCount.Value == 0)
+        {
+
+        }
+        else
+        {
+            networkMapSceneManager.upText.text = $"第{turnCount.Value}回合";
+        }
+    }
+
     #endregion 同步数据变换回调
 
 

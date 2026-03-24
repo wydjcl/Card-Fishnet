@@ -4,6 +4,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -49,12 +50,19 @@ public class NetworkPlayer : NetworkBehaviour
 
 
 
+    [ContextMenu("改变角色id为0")]
+    [Client]
+    public void ChangeCharacterIdTo0()
+    {
+        SelectCharacterServerRpc(0);
+    }
     [ContextMenu("改变角色id为1")]
-    public void ChangeCharacterId()
+    [Client]
+    public void ChangeCharacterIdTo1()
     {
         SelectCharacterServerRpc(1);
     }
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void SelectCharacterServerRpc(int id)
     {
         characterId.Value = id;
@@ -76,10 +84,15 @@ public class NetworkPlayer : NetworkBehaviour
         }
         if (characterId.Value == 1)
         {
+            deck.Add(0);
             deck.Add(1);
+            deck.Add(2);
+            deck.Add(0);
             deck.Add(1);
+            deck.Add(2);
         }
     }
+
     [ContextMenu("创建卡牌")]
     [Client]
     public void CreateCard()
@@ -245,6 +258,11 @@ public class NetworkPlayer : NetworkBehaviour
     private void OnCharacterIdChanged(int prev, int next, bool asServer)
     {
         _characterId = characterId.Value;
+        //NetworkLobbyNode lobby = FindAnyObjectByType<NetworkLobbyNode>(FindObjectsInactive.Include);
+        //if (lobby != null)
+        //{
+        //    Debug.Log("找到了Lobby");
+        //}
     }
     private void OnDeckChanged(SyncListOperation op, int index, int oldItem, int newItem, bool asServer)
     {

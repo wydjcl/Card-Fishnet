@@ -40,11 +40,6 @@ public class Character : NetworkBehaviour
         ID.OnChange += ID_OnChange;
         isDead.OnChange += IsDead_OnChange;
         dynamicText = Resources.Load<GameObject>("DynamicTextPrefab");
-        if (IsServerStarted)
-        {
-            maxHealth.Value = 100;
-            health.Value = 100;//以后改
-        }
     }
 
 

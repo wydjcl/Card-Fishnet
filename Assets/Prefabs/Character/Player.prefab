@@ -159,12 +159,15 @@ MonoBehaviour:
   _maxHealth: 0
   _health: 0
   _defense: 0
+  _isDead: 0
+  _isPlayer: 0
   healthText: {fileID: 5087853633396481351}
   defenseText: {fileID: 8693059044084567024}
   characterSprite: {fileID: 7329844514084434203}
   cardZone: {fileID: 8202328194808643361}
   manaText: {fileID: 2799678975245366347}
   _mana: 0
+  _maxMana: 0
 --- !u!1 &828868748789596547
 GameObject:
   m_ObjectHideFlags: 0
@@ -409,7 +412,7 @@ SpriteRenderer:
   m_SortingLayerID: -438302749
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e671cd8dca1fc1b42a91b07eb692089a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1aa2f5eea3ae176498788c3bb687c57e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

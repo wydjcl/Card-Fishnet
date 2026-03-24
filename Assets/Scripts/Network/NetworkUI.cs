@@ -1,6 +1,7 @@
 using FishNet;
 using FishNet.Managing;
 using FishNet.Managing.Scened;
+using FishNet.Object;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,6 +12,13 @@ public class NetworkUI : MonoBehaviour
     public GameObject lobbyNode;
     public TextMeshProUGUI startButtomText;
     private string ipAddress = "localhost";
+    private void Awake()
+    {
+        if (networkManager == null)
+        {
+            networkManager = FindAnyObjectByType<NetworkManager>();
+        }
+    }
     private void OnGUI()
     {
         if (networkManager == null)
@@ -66,7 +74,7 @@ public class NetworkUI : MonoBehaviour
             {
                 networkManager.ServerManager.StopConnection(true);
                 networkManager.ClientManager.StopConnection();
-
+                UnityEngine.SceneManagement.SceneManager.LoadScene(0);
                 lobbyNode.SetActive(false);
 
             }
@@ -90,4 +98,5 @@ public class NetworkUI : MonoBehaviour
         InstanceFinder.NetworkManager.SceneManager.LoadGlobalScenes(sld);
         NetworkRpcManager.instance.ExitLobby();
     }
+
 }

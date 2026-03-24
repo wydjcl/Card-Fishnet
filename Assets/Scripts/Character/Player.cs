@@ -11,18 +11,31 @@ using UnityEngine;
 public class Player : Character
 {
     public GameObject cardZone;
+    public NetworkPlayer netPlayer;
     public TextMeshPro manaText;
     public readonly SyncVar<int> mana = new SyncVar<int>();
     public readonly SyncVar<int> maxMana = new SyncVar<int>();
+    public readonly SyncVar<int> characterId = new SyncVar<int>();
     public int _mana;
     public int _maxMana;
+    public int _characterId;
+
     public override void OnStartClient()
     {
         base.OnStartClient();
+        netPlayer = Owner.FirstObject.GetComponent<NetworkPlayer>();//他的网络玩家对象
+        if (IsServerStarted)//服务端给他基础属性赋值,需整合
+        {
+            maxMana.Value = 3;
+            mana.Value = 3;//初始法力值,需修改
+            isPlayer.Value = true;
+            InitDataRpc(characterId.Value);//根据角色id改变特殊属性
+        }
+
         if (IsOwner)
         {
-            name = "本玩家" + Owner.ClientId + "UI";
-            InstanceFinder.ClientManager.Connection.FirstObject.GetComponent<NetworkPlayer>().myPlayer = this;
+            name = "本玩家" + Owner.ClientId + "UI";//编辑器内改名
+            InstanceFinder.ClientManager.Connection.FirstObject.GetComponent<NetworkPlayer>().myPlayer = this;//网络玩家调用角色玩家
         }
         else
         {
@@ -30,14 +43,31 @@ public class Player : Character
         }
 
         mana.OnChange += Mana_OnChange;
+        characterSprite.sprite = Resources.Load<Sprite>($"P_{characterId.Value}");
+    }
 
-        if (IsServerStarted)
+    [ServerRpc(RequireOwnership = false)]
+    public void InitDataRpc(int i)
+    {
+        if (i == 0)
         {
-            maxMana.Value = 3;
-            mana.Value = 3;//初始法力值,需修改
-            isPlayer.Value = true;
+            maxHealth.Value = 77;
+            health.Value = 77;
+        }
+        if (i == 1)
+        {
+            maxHealth.Value = 88;
+            health.Value = 88;
         }
     }
+    [ContextMenu("把血量改成999")]
+    [Server]
+    public void Test()
+    {
+        maxHealth.Value = 999;
+        health.Value = 999;
+    }
+
     /// <summary>
     /// 减少法力值Rpc
     /// </summary>
