@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[CreateAssetMenu(fileName = "普通攻击", menuName = "SO/卡牌/卡牌效果/普通攻击")]
+[CreateAssetMenu(fileName = "普通攻击", menuName = "SO/卡牌/普通攻击")]
 public class NormalAttack : CardEffectSO
 {
     public int damageValue = 6;

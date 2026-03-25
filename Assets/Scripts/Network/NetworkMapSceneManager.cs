@@ -19,6 +19,8 @@ public class NetworkMapSceneManager : NetworkBehaviour
     public BattleManager battleManager;
     public MapUIRoot mapUIRoot;
     public TextMeshProUGUI upText;
+    public GameObject bagUI;
+
     public bool isBattle;
     private void Awake()
     {
@@ -139,7 +141,11 @@ public class NetworkMapSceneManager : NetworkBehaviour
             child.gameObject.SetActive(false);
         }
     }
-
+    [Client]
+    public void ClickBagUI()
+    {
+        bagUI.SetActive(!bagUI.activeSelf);
+    }
 
 
 }

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[CreateAssetMenu(fileName = "给予信仰", menuName = "SO/卡牌/卡牌效果/给予信仰")]
+[CreateAssetMenu(fileName = "给予信仰", menuName = "SO/卡牌/给予信仰")]
 public class GetFaith : CardEffectSO
 {
     public bool self;

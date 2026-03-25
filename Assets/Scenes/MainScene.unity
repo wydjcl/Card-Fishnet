@@ -1130,6 +1130,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4d864461ae1fc7f4fb1e3a9506348d6f, type: 2}
   enemies:
   - {fileID: 6683151337358677847, guid: af1ab8a1830f5e543bfd83fd0ce216b8, type: 3}
+  buffs:
+  - {fileID: 11400000, guid: 61ee8af62653c8c4b813786902d5a1ed, type: 2}
 --- !u!4 &1644023281
 Transform:
   m_ObjectHideFlags: 0

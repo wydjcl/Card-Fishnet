@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[CreateAssetMenu(fileName = "给予自己护盾", menuName = "SO/卡牌/卡牌效果/给予自己护盾")]
+[CreateAssetMenu(fileName = "给予自己护盾", menuName = "SO/卡牌/给予自己护盾")]
 public class GiveSelfDefense : CardEffectSO
 {
     public int defenseValue = 5;

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-[CreateAssetMenu(fileName = "CardData", menuName = "SO/卡牌/卡牌数据")]
+[CreateAssetMenu(fileName = "CardData", menuName = "SO/卡牌Data")]
 public class CardDataSO : ScriptableObject
 {
     public int cardID;

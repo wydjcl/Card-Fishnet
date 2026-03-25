@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[CreateAssetMenu(fileName = "抽牌", menuName = "SO/卡牌/卡牌效果/抽牌")]
+[CreateAssetMenu(fileName = "抽牌", menuName = "SO/卡牌/抽牌")]
 public class DrawCard : CardEffectSO
 {
     [Header("抽牌数")]

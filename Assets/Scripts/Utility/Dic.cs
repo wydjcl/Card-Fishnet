@@ -9,6 +9,7 @@ public class Dic : SingletonMono<Dic>
     public Dictionary<int, string> dict = new Dictionary<int, string>();
     public List<CardDataSO> cardDataSOs = new List<CardDataSO>();
     public List<NetworkObject> enemies = new List<NetworkObject>();
+    public List<BuffEffectSO> buffs = new List<BuffEffectSO>();
     public CardDataSO FindCard(int i)
     {
         foreach (CardDataSO s in cardDataSOs)
