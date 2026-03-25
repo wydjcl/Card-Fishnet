@@ -547,7 +547,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 40c8fbb61a6a293419f744fa8392df25, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e671cd8dca1fc1b42a91b07eb692089a, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -612,8 +612,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterImage: {fileID: 1772802682}
   characterImages:
-  - {fileID: 21300000, guid: e671cd8dca1fc1b42a91b07eb692089a, type: 3}
   - {fileID: 21300000, guid: 40c8fbb61a6a293419f744fa8392df25, type: 3}
+  - {fileID: 21300000, guid: e671cd8dca1fc1b42a91b07eb692089a, type: 3}
 --- !u!1 &1092411789
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,7 +831,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e671cd8dca1fc1b42a91b07eb692089a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 40c8fbb61a6a293419f744fa8392df25, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1127,6 +1127,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ea99c678a228c48499d145387f221e98, type: 2}
   - {fileID: 11400000, guid: b10583ab472e5af468509ced3bbf2df8, type: 2}
   - {fileID: 11400000, guid: 9c4a117fafaaa064390007f0b1e1c7f8, type: 2}
+  - {fileID: 11400000, guid: 4d864461ae1fc7f4fb1e3a9506348d6f, type: 2}
   enemies:
   - {fileID: 6683151337358677847, guid: af1ab8a1830f5e543bfd83fd0ce216b8, type: 3}
 --- !u!4 &1644023281
@@ -1201,7 +1202,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e671cd8dca1fc1b42a91b07eb692089a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 40c8fbb61a6a293419f744fa8392df25, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1

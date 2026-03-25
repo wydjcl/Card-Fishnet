@@ -16,6 +16,8 @@ public class Player : Character
     public readonly SyncVar<int> mana = new SyncVar<int>();
     public readonly SyncVar<int> maxMana = new SyncVar<int>();
     public readonly SyncVar<int> characterId = new SyncVar<int>();
+    public readonly SyncVar<int> faith = new SyncVar<int>();//关键词:信仰
+    public int _faith;
     public int _mana;
     public int _maxMana;
     public int _characterId;
@@ -43,21 +45,24 @@ public class Player : Character
         }
 
         mana.OnChange += Mana_OnChange;
+        faith.OnChange += Faith_OnChange;
         characterSprite.sprite = Resources.Load<Sprite>($"P_{characterId.Value}");
     }
+
+
 
     [ServerRpc(RequireOwnership = false)]
     public void InitDataRpc(int i)
     {
         if (i == 0)
         {
-            maxHealth.Value = 77;
-            health.Value = 77;
+            maxHealth.Value = 88;
+            health.Value = 88;
         }
         if (i == 1)
         {
-            maxHealth.Value = 88;
-            health.Value = 88;
+            maxHealth.Value = 77;
+            health.Value = 77;
         }
     }
     [ContextMenu("把血量改成999")]
@@ -91,6 +96,15 @@ public class Player : Character
     {
         mana.Value = i;
     }
+    [ServerRpc(RequireOwnership = false)]
+    public void TakeFaithRpc(int i)
+    {
+        faith.Value += i;
+    }
+
+
+
+
     private void Mana_OnChange(int prev, int next, bool asServer)
     {
         _mana = mana.Value;
@@ -98,6 +112,10 @@ public class Player : Character
         {
             manaText.text = $"MP:{mana.Value}/{maxMana.Value}";
         }
+    }
+    private void Faith_OnChange(int prev, int next, bool asServer)
+    {
+        _faith = faith.Value;
     }
     public override void OnStopClient()
     {

@@ -75,10 +75,10 @@ public class NetworkPlayer : NetworkBehaviour
     {
         if (characterId.Value == 0)
         {
-            deck.Add(0);
+            deck.Add(3);
             deck.Add(1);
             deck.Add(2);
-            deck.Add(0);
+            deck.Add(3);
             deck.Add(1);
             deck.Add(2);
         }

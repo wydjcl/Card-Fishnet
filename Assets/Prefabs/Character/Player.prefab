@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4284644398473671924}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -165,9 +165,12 @@ MonoBehaviour:
   defenseText: {fileID: 8693059044084567024}
   characterSprite: {fileID: 7329844514084434203}
   cardZone: {fileID: 8202328194808643361}
+  netPlayer: {fileID: 0}
   manaText: {fileID: 2799678975245366347}
+  _faith: 0
   _mana: 0
   _maxMana: 0
+  _characterId: 0
 --- !u!1 &828868748789596547
 GameObject:
   m_ObjectHideFlags: 0

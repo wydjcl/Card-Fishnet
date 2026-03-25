@@ -57,7 +57,7 @@ public class NetworkMapSceneManager : NetworkBehaviour
             Debug.Log($"为玩家 {conn.ClientId} 生成了一个玩家对象UI");
         }
         NetworkObject roomP = Instantiate(roomPrefab);//创建房间,需要修改
-        roomP.transform.position = new Vector3(0, 3.83f, 0);
+        roomP.transform.position = new Vector3(0, 3.6f, 0);
         InstanceFinder.ServerManager.Spawn(roomP);
 
     }
