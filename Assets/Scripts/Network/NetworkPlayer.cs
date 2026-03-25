@@ -13,7 +13,7 @@ public class NetworkPlayer : NetworkBehaviour
     [Header("同步数据区")]
     public readonly SyncVar<int> connID = new SyncVar<int>();
     public readonly SyncVar<int> characterId = new SyncVar<int>();
-    public readonly SyncList<int> deck = new SyncList<int>();
+    public readonly SyncList<string> deck = new SyncList<string>();
     [Header("需要导入的实例")]
     public GameObject cardPrefab;
     public CardLayout cardLayout;
@@ -29,7 +29,7 @@ public class NetworkPlayer : NetworkBehaviour
     [Header("Debug区域")]
     public int _characterId;
     public int _connID;
-    public List<int> _deck;
+    public List<string> _deck;
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -75,21 +75,22 @@ public class NetworkPlayer : NetworkBehaviour
     {
         if (characterId.Value == 0)
         {
-            deck.Add(3);
-            deck.Add(1);
-            deck.Add(2);
-            deck.Add(3);
-            deck.Add(1);
-            deck.Add(2);
+            deck.Add("狂热信仰");
+            deck.Add("基础防御术式");
+            deck.Add("发现宝箱");
+            deck.Add("发现宝箱");
+            deck.Add("给你一拳");
+            deck.Add("荆棘盾");
+
         }
         if (characterId.Value == 1)
         {
-            deck.Add(0);
-            deck.Add(1);
-            deck.Add(2);
-            deck.Add(0);
-            deck.Add(1);
-            deck.Add(2);
+            deck.Add("狂热信仰");
+            deck.Add("狂热信仰");
+            deck.Add("发现宝箱");
+            deck.Add("发现宝箱");
+            deck.Add("基础防御术式");
+            deck.Add("基础防御术式");
         }
     }
 
@@ -105,12 +106,12 @@ public class NetworkPlayer : NetworkBehaviour
         discardDeck.Clear();
         drawDeck.Clear();
         removeDeck.Clear();
-        foreach (var cardID in deck)
+        foreach (var cardN in deck)
         {
             var cardP = Instantiate(cardPrefab, cardLayout.transform);
             cardP.SetActive(false);
             Card card = cardP.GetComponent<Card>();
-            var so = Dic.Instance.FindCard(cardID);
+            var so = Dic.Instance.FindCard(cardN);
             card.InitCard(so);
             drawDeck.Add(card);
         }
@@ -264,7 +265,7 @@ public class NetworkPlayer : NetworkBehaviour
         //    Debug.Log("找到了Lobby");
         //}
     }
-    private void OnDeckChanged(SyncListOperation op, int index, int oldItem, int newItem, bool asServer)
+    private void OnDeckChanged(SyncListOperation op, int index, string oldItem, string newItem, bool asServer)
     {
         _deck.Clear();
         _deck.AddRange(deck);

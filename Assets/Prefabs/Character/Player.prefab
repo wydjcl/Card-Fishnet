@@ -155,19 +155,20 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 3033977185605593236}
   _networkObjectCache: {fileID: 3033977185605593236}
+  _faith: 0
   _ID: 0
   _maxHealth: 0
   _health: 0
-  _defense: 0
+  _block: 0
   _isDead: 0
   _isPlayer: 0
+  _thorn: 0
   healthText: {fileID: 5087853633396481351}
-  defenseText: {fileID: 8693059044084567024}
+  blockText: {fileID: 8693059044084567024}
   characterSprite: {fileID: 7329844514084434203}
   cardZone: {fileID: 8202328194808643361}
   netPlayer: {fileID: 0}
   manaText: {fileID: 2799678975245366347}
-  _faith: 0
   _mana: 0
   _maxMana: 0
   _characterId: 0
@@ -183,7 +184,7 @@ GameObject:
   - component: {fileID: 1512804549231595133}
   - component: {fileID: 8693059044084567024}
   m_Layer: 0
-  m_Name: DefenseText
+  m_Name: BlockText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

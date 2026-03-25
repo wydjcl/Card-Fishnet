@@ -23,7 +23,7 @@ public class NormalSkull : Enemy
         yield return StartCoroutine(Ani());
         foreach (var p in BattleManager.Instance.players)
         {
-            p.TakeDamege(7);
+            this.CauseDamageRpc(p, 7);
         }
     }
 

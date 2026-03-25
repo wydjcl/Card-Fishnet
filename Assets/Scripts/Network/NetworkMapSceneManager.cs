@@ -106,6 +106,10 @@ public class NetworkMapSceneManager : NetworkBehaviour
         isBattle = false;
         EnableMapChildren();
         UnEnableBattleChildren();
+        foreach (var p in BattleManager.Instance.players)
+        {
+            p.AfterBattle();
+        }
     }
 
     [ObserversRpc]

@@ -177,7 +177,7 @@ public class BattleManager : NetworkBehaviour
     {
         player.DrawCard(3);
         player.myPlayer.ChangeManaRpc(player.myPlayer.maxMana.Value);
-        player.myPlayer.DeleteDefenseRpc();
+        player.myPlayer.DeleteBlockRpc();
         isAgree = false;
         turnButtomText.text = $"回合结束{agreeCount.Value}/{totalPlayers.Value}";
     }
@@ -224,7 +224,7 @@ public class BattleManager : NetworkBehaviour
             Debug.LogWarning("不在敌人回合,警告!!!");
         }
         NextState();
-        Debug.Log("所有敌人行动完毕");
+        //Debug.Log("所有敌人行动完毕");
     }
     [Server]
     public void ServerEnemyTurnEnd()

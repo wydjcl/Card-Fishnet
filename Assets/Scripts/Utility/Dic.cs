@@ -10,11 +10,11 @@ public class Dic : SingletonMono<Dic>
     public List<CardDataSO> cardDataSOs = new List<CardDataSO>();
     public List<NetworkObject> enemies = new List<NetworkObject>();
     public List<BuffEffectSO> buffs = new List<BuffEffectSO>();
-    public CardDataSO FindCard(int i)
+    public CardDataSO FindCard(string i)
     {
         foreach (CardDataSO s in cardDataSOs)
         {
-            if (s.cardID == i)
+            if (s.cardName == i)
             {
                 return s;
             }

@@ -599,7 +599,7 @@ GameObject:
   - component: {fileID: 322180183137097842}
   - component: {fileID: 6925559070026622117}
   m_Layer: 0
-  m_Name: DefenseText
+  m_Name: BlockText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -911,13 +911,16 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 6683151337358677847}
   _networkObjectCache: {fileID: 0}
+  _faith: 0
   _ID: 0
   _maxHealth: 0
   _health: 0
-  _defense: 0
+  _block: 0
   _isDead: 0
+  _isPlayer: 0
+  _thorn: 0
   healthText: {fileID: 8209095618496687149}
-  defenseText: {fileID: 6925559070026622117}
+  blockText: {fileID: 6925559070026622117}
   characterSprite: {fileID: 6667711987391354888}
 --- !u!1 &4971148647827014090
 GameObject:

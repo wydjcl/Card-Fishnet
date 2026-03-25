@@ -7,6 +7,6 @@ public class NormalAttack : CardEffectSO
     public int damageValue = 6;
     public override void ApplyEffect(Character caster, Character target, Card card, NetworkPlayer player)
     {
-        target.TakeDamageRpc(damageValue);
+        caster.CauseDamageRpc(target, damageValue);
     }
 }

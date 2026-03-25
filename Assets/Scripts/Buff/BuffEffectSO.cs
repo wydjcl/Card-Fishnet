@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class BuffEffectSO : ScriptableObject
 {
-    public int buffId;
+    public string buffName;
     /// <summary>
     /// 
     /// </summary>

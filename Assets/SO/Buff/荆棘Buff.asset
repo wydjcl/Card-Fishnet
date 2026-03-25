@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd3bb28f68d7d0a4683ba7ff45cc014f, type: 3}
   m_Name: "\u8346\u68D8Buff"
   m_EditorClassIdentifier: 
-  buffId: 0
+  buffName: "\u8346\u68D8"

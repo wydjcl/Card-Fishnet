@@ -6,15 +6,20 @@ public class DynamicText : MonoBehaviour
 {
     public TextMeshPro text;
     public bool upEffect = true;
+    public bool blockEffect = false;
     void Start()
     {
         if (upEffect)
         {
-            UpEffect();
+            UPText();
+        }
+        else if (blockEffect)
+        {
+
         }
     }
 
-    public void UpEffect()
+    public void UPText()
     {
         Vector3 start = transform.position;
 
@@ -27,6 +32,8 @@ public class DynamicText : MonoBehaviour
             Destroy(gameObject);
         });
     }
+
+
     public void ChangeToHurtText(int i)
     {
         text.text = i.ToString();
@@ -42,6 +49,11 @@ public class DynamicText : MonoBehaviour
         {
             text.color = Color.blue;
         }
+    }
+
+    public void ChangeToBlockText()
+    {
+        text.color = Color.white;
     }
 
     private void OnDestroy()
