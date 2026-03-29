@@ -75,13 +75,22 @@ public class NetworkPlayer : NetworkBehaviour
     {
         if (characterId.Value == 0)
         {
-            deck.Add("狂热信仰");
+            deck.Add("给你一拳");
             deck.Add("基础防御术式");
             deck.Add("发现宝箱");
             deck.Add("发现宝箱");
-            deck.Add("给你一拳");
+            deck.Add("发现宝箱");
+            deck.Add("发现宝箱");
+            deck.Add("还不能放弃");
+            deck.Add("狂热信仰");
+            deck.Add("信仰一击");
+            deck.Add("临阵磨剑");
+            deck.Add("我身为盾");
             deck.Add("荆棘盾");
-
+            deck.Add("旋风斩");
+            deck.Add("星光信仰");
+            deck.Add("战争怒吼");
+            deck.Add("奇怪的药剂");
         }
         if (characterId.Value == 1)
         {

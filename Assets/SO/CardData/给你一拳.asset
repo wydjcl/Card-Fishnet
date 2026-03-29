@@ -17,7 +17,8 @@ MonoBehaviour:
   cardCost: 1
   cardType: 0
   cardImage: {fileID: 21300000, guid: 92ac3e30f78b9da439d01adbbb4800a7, type: 3}
-  cardDes: "\u5BF9\u654C\u4EBA\u9020\u62106\u4F24\u5BB3"
+  cardDes: "\u5BF9\u654C\u4EBA\u9020\u6210{\u653B\u51FB\u529B*1}\u4F24\u5BB3"
+  cardUIDes: 
   effects:
-  - {fileID: 11400000, guid: c4eb66edad0ae4e4a94756f1dbcccbf5, type: 2}
+  - {fileID: 11400000, guid: 9507d6fcf5513e84ba6176d2efc8a416, type: 2}
   - {fileID: 11400000, guid: 251434be667844543bd4a812ec80c54b, type: 2}

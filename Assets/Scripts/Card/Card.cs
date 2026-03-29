@@ -22,6 +22,7 @@ public class Card : MonoBehaviour
     public Quaternion originalRotation;
     public int orSortingOrder;
     public int originaLayerOrder;//原始叠层排序
+    public CardDataSO dataSO;
 
     public NetworkPlayer player;
     public int cardID;
@@ -36,12 +37,14 @@ public class Card : MonoBehaviour
         cardCost = so.cardCost;
         cardType = so.cardType;
         cardEffectSOs = so.effects;
+        dataSO = so;
 
         player = InstanceFinder.ClientManager.Connection.FirstObject.GetComponent<NetworkPlayer>();
         cardSprite.sprite = so.cardImage;
         cardNameText.text = so.cardName;
         cardCostText.text = so.cardCost.ToString();
-        cardDesText.text = so.cardDes;
+
+        cardDesText.text = RichTextHelper.ReplaceValues(so.cardDes, player.myPlayer.attack.Value + player.myPlayer.attackEx.Value);
 
     }
 
@@ -68,7 +71,12 @@ public class Card : MonoBehaviour
         }
     }
 
-
+    public void ChangeRichText(string t)
+    {
+        cardNameText.text = $"<color=yellow>{cardName}</color>";
+        cardCostText.text = $"<color=blue>{cardCost}</color>";
+        cardDesText.text = $"<color=white>{cardDesText.text}</color>";
+    }
     private void OnDestroy()
     {
         transform.DOKill();

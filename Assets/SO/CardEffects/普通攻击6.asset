@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: "\u666E\u901A\u653B\u51FB6"
   m_EditorClassIdentifier: 
   damageValue: 6
+  byAttack: 1
+  damagePercent: 1

@@ -15,4 +15,4 @@ MonoBehaviour:
   self: 1
   _buffName: "\u8346\u68D8"
   _buffStack: 5
-  _forever: 0
+  _forever: 1

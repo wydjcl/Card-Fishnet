@@ -128,11 +128,46 @@ public class BattleManager : NetworkBehaviour
             }
         }
     }
+    /// <summary>
+    /// 寻找活着的随机玩家对象,优先嘲讽
+    /// </summary>
+    /// <returns></returns>
+    public Player FindPlayer()
+    {
+        var aliveList = new List<Player>();
+        foreach (var p in players)
+        {
+            if (!p.isDead.Value)
+                aliveList.Add(p);
+        }
+        if (aliveList.Count <= 0)
+        {
+            Debug.LogWarning("没有玩家了,不应该执行该检索，警告!!!");
+            return null;
+        }
+
+        var tauntList = new List<Player>();
+        foreach (var netObj in aliveList)
+        {
+            if (netObj.taunt.Value && !netObj.isDead.Value)
+            {
+                tauntList.Add(netObj);
+            }
+        }
+        if (tauntList.Count > 0)
+        {
+            return tauntList[UnityEngine.Random.Range(0, players.Count)];
+        }
+        {
+            return players[UnityEngine.Random.Range(0, players.Count)];
+        }
+    }
+
     #region 玩家回合方法
     [Server]
     private void EnterState(TurnState state)
     {
-        Debug.Log("请求进入" + state.ToString());
+        Debug.Log("现在是" + state.ToString());
         turnState.Value = state;
         switch (state)
         {
@@ -175,9 +210,12 @@ public class BattleManager : NetworkBehaviour
     [ObserversRpc]
     public void ClientPlayerTurnStart()
     {
-        player.DrawCard(3);
+        player.DrawCard(7);
         player.myPlayer.ChangeManaRpc(player.myPlayer.maxMana.Value);
         player.myPlayer.DeleteBlockRpc();
+        player.myPlayer.RemoveBuffRpc("临时力量");
+        player.myPlayer.RemoveBuffRpc("临时坚韧");
+        player.myPlayer.CalBuff();
         isAgree = false;
         turnButtomText.text = $"回合结束{agreeCount.Value}/{totalPlayers.Value}";
     }

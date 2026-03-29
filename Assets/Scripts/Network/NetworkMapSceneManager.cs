@@ -99,6 +99,9 @@ public class NetworkMapSceneManager : NetworkBehaviour
         var e = Instantiate(Dic.Instance.enemies[0]);
         e.gameObject.transform.position = new Vector2(6.5f, 2.7f);
         InstanceFinder.ServerManager.Spawn(e);
+        var e2 = Instantiate(Dic.Instance.enemies[0]);
+        e2.gameObject.transform.position = new Vector2(0f, 2.7f);
+        InstanceFinder.ServerManager.Spawn(e2);
     }
     [Server]
     public void EndBattle()

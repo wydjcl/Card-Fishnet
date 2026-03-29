@@ -21,10 +21,16 @@ public class Character : NetworkBehaviour
 
     //RPG数值
     public readonly SyncVar<int> attack = new SyncVar<int>();
+    public readonly SyncVar<int> attackEx = new SyncVar<int>();//额外攻击力
     public readonly SyncVar<float> defense = new SyncVar<float>();
+    public readonly SyncVar<float> defenseEx = new SyncVar<float>();//额外防御力
     //关键词数值
     public readonly SyncVar<int> thorn = new SyncVar<int>();//关键词 荆棘,手上对攻击者造成无来源伤害
     public readonly SyncVar<int> faith = new SyncVar<int>();//关键词:信仰,造成伤害时候随机友军回复25%血
+    public readonly SyncVar<int> faithEx = new SyncVar<int>();//信仰额外数值,增加信仰回复量
+    public readonly SyncVar<bool> faithDouble = new SyncVar<bool>();//信仰回复量翻倍
+    public readonly SyncVar<bool> taunt = new SyncVar<bool>();//信仰回复量翻倍
+    [SerializeField]
     public readonly SyncList<Buff> buffList = new SyncList<Buff>();//预留bufflist
 
     public int _faith;
@@ -44,22 +50,31 @@ public class Character : NetworkBehaviour
     public void Test4()
     {
         Buff b = new Buff();
-        b.buffName = "信仰";
-        b.buffStack = 3;
-        b.forever = true;
+        b.buffName = "临时力量";
+        b.buffStack = 5;
+        b.forever = false;
         AddBuffRpc(b);
         // buffList.Add(b);
     }
     [ContextMenu("读取buff")]
     public void Test5()
     {
+        if (buffList.Count == 0)
+        {
+            Debug.Log("无任何buff"); return;
+        }
         Debug.Log("buff长度" + buffList.Count);
         Debug.Log("buff名字" + buffList[0].buffName);
         Debug.Log("buffstack" + buffList[0].buffStack);
-        Debug.Log("t:" + thorn.Value);
+        // Debug.Log("力:" + attack.Value + attackEx.Value);
+    }
+    [ContextMenu("移除buff")]
+    public void Test6()
+    {
+        RemoveBuffRpc("力量");
     }
     [ContextMenu("获取999护甲")]
-    public void Test6()
+    public void Test7()
     {
         block.Value = 999;
     }
@@ -78,8 +93,12 @@ public class Character : NetworkBehaviour
         ID.OnChange += ID_OnChange;
         isDead.OnChange += IsDead_OnChange;
         faith.OnChange += Faith_OnChange;
+        thorn.OnChange += Thorn_OnChange;
         dynamicText = Resources.Load<GameObject>("DynamicTextPrefab");
     }
+
+
+
     public override void OnStopClient()
     {
         base.OnStopClient();
@@ -88,6 +107,7 @@ public class Character : NetworkBehaviour
         block.OnChange -= Block_OnChange;
         isDead.OnChange -= IsDead_OnChange;
         faith.OnChange -= Faith_OnChange;
+        thorn.OnChange -= Thorn_OnChange;
     }
     protected virtual void OnDestroy()
     {
@@ -104,7 +124,11 @@ public class Character : NetworkBehaviour
     [Server]
     public virtual void TakeDamege(Character caster, int i, bool source)
     {
-
+        i = Mathf.CeilToInt(i * (100 - defense.Value - defenseEx.Value) * 0.01f);//根据防御系数调整伤害,向上取整正数,向下取整负数
+        if (i < 0)
+        {
+            i = 0;
+        }
         if (block.Value > i)
         {
             block.Value -= i;
@@ -121,7 +145,7 @@ public class Character : NetworkBehaviour
             isDead.Value = true;
             if (isPlayer.Value)
             {
-
+                Debug.Log("玩家死亡");
             }
             else
             {
@@ -129,7 +153,7 @@ public class Character : NetworkBehaviour
                 BattleManager.Instance.ServerCheckWin();
             }
         }
-        if (source)
+        if (source)//如果有伤害来源,就统计伤害,例如吸血
         {
             if (caster != null)
             {
@@ -160,9 +184,18 @@ public class Character : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public virtual void CauseDamageRpc(Character target, int i)
     {
+        if (target == null)
+        {
+            Debug.Log("目标不存在");
+            return;
+        }
         if (target.thorn.Value > 0)
         {
             TakeDamege(this, target.thorn.Value, false);//如果目标身上有荆棘,就对自己造成无来源伤害
+            Buff thornB = new Buff();
+            thornB.buffStack = -1;
+            thornB.buffName = "荆棘";
+            target.AddBuffRpc(thornB);
         }
         target.TakeDamageRpc(this, i);
     }
@@ -183,14 +216,27 @@ public class Character : NetworkBehaviour
                     pList.Add(p);
                 }
             }
+            if (pList.Count == 0)
+            {
+                Debug.Log("无人负伤返回 ");
+                return;
+            }
             var item = pList[UnityEngine.Random.Range(0, pList.Count)];
-            item.Heal((i + 3) / 4);//25%向上取整
+            if (faithDouble.Value)
+            {
+                item.Heal(i / 2);//50%向上取整
+            }
+            else
+            {
+                item.Heal((i + 3) / 4);//25%向上取整
+            }
+            Buff buff = new Buff();
+            buff.buffName = "信仰";
+            buff.buffStack = -1;
+            buff.forever = false;
+            AddBuffRpc(buff);
         }
-        Buff buff = new Buff();
-        buff.buffName = "信仰";
-        buff.buffStack = -1;
-        buff.forever = false;
-        AddBuffRpc(buff);
+
     }
     [ServerRpc(RequireOwnership = false)]
     public virtual void HealRpc(int i)
@@ -245,28 +291,94 @@ public class Character : NetworkBehaviour
                 break;
             }
         }
-    }
-    [ServerRpc(RequireOwnership = false)]
-    public void RemoveBuffRpc(Buff newBuff)
-    {
+        //为0就清除
         for (int i = buffList.Count - 1; i >= 0; i--)
         {
-            if (buffList[i].buffName == newBuff.buffName)
+            if (buffList[i].buffStack == 0)
             {
-                buffList[i].buffStack -= newBuff.buffStack;
-
-                if (buffList[i].buffStack <= 0)
+                foreach (var so in Dic.Instance.buffs)
                 {
-                    buffList.RemoveAt(i); // ✅ 安全删除
+                    if (so.buffName == buffList[i].buffName)
+                    {
+                        so.RemoveEffect(this, 0);
+                        buffList.RemoveAt(i);
+                        break;
+                    }
                 }
+                break;
+            }
+
+        }
+    }
+    [ServerRpc(RequireOwnership = false)]
+    public void RemoveBuffRpc(string newBuffName)
+    {
+        //for (int i = buffList.Count - 1; i >= 0; i--)
+        //{
+        //    if (buffList[i].buffName == newBuff.buffName)
+        //    {
+        //        buffList[i].buffStack -= newBuff.buffStack;
+
+        //        if (buffList[i].buffStack <= 0)
+        //        {
+        //            buffList.RemoveAt(i); // ✅ 安全删除
+        //        }
+        //    }
+        //}
+        //foreach (var so in Dic.Instance.buffs)
+        //{
+        //    if (so.buffName == newBuff.buffName)
+        //    {
+        //        so.RemoveEffect(this, newBuff.buffStack);
+        //        break;
+        //    }
+        //}
+
+        for (int i = buffList.Count - 1; i >= 0; i--)
+        {
+            if (buffList[i].buffName == newBuffName)
+            {
+                foreach (var so in Dic.Instance.buffs)
+                {
+                    if (so.buffName == newBuffName)
+                    {
+                        so.RemoveEffect(this, buffList[i].buffStack);
+                        break;
+                    }
+                }
+                buffList.RemoveAt(i);
             }
         }
-        foreach (var so in Dic.Instance.buffs)
+    }
+    /// <summary>
+    /// 回合开始计算buff
+    /// </summary>
+    [ServerRpc(RequireOwnership = false)]
+    public void CalBuff()
+    {
+        Debug.Log("检查buff");
+        for (int i = buffList.Count - 1; i >= 0; i--)
         {
-            if (so.buffName == newBuff.buffName)
+            foreach (var so in Dic.Instance.buffs)
             {
-                so.RemoveEffect(this, newBuff.buffStack);
-                break;
+                if (so.buffName == buffList[i].buffName)
+                {
+                    so.TurnStartEffect(this, buffList[i].buffStack);
+                    if (buffList[i].forever)
+                    {
+                    }
+                    else
+                    {
+                        buffList[i].buffStack -= 1;
+                        so.LessOneEffect(this);
+                        if (buffList[i].buffStack <= 0)
+                        {
+                            so.RemoveEffect(this, 0);
+                            buffList.RemoveAt(i);
+                        }
+                    }
+                    break;
+                }
             }
         }
     }
@@ -284,6 +396,23 @@ public class Character : NetworkBehaviour
     {
         faith.Value += i;
     }
+    [ServerRpc(RequireOwnership = false)]
+    public void TakeAttackExRpc(int i)
+    {
+        attackEx.Value += i;
+    }
+    [ServerRpc(RequireOwnership = false)]
+    public void TakeDefenseExRpc(int i)
+    {
+        defenseEx.Value += i;
+    }
+    [ServerRpc(RequireOwnership = false)]
+    public void TakeTauntRpc(bool i)
+    {
+        taunt.Value = i;
+    }
+
+
 
     #endregion 服务端增改数值或Buff
     #region 同步数据回调
@@ -318,6 +447,10 @@ public class Character : NetworkBehaviour
     private void ID_OnChange(int prev, int next, bool asServer)
     {
         _ID = ID.Value;
+    }
+    private void Thorn_OnChange(int prev, int next, bool asServer)
+    {
+        _thorn = thorn.Value;
     }
     private void Block_OnChange(int prev, int next, bool asServer)
     {

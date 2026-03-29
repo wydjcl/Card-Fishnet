@@ -12,6 +12,7 @@ public class NormalSkull : Enemy
         {
             maxHealth.Value = 66;
             health.Value = 66;//以后改
+            attack.Value = 10;
         }
     }
 
@@ -21,10 +22,12 @@ public class NormalSkull : Enemy
         //yield return new WaitForSeconds(1.5f);
         ClientAni();
         yield return StartCoroutine(Ani());
-        foreach (var p in BattleManager.Instance.players)
-        {
-            this.CauseDamageRpc(p, 7);
-        }
+        //foreach (var p in BattleManager.Instance.players)
+        //{
+        //    this.CauseDamageRpc(p, attack.Value);
+        //}
+        this.CauseDamageRpc(BattleManager.Instance.FindPlayer(), attack.Value);
+
     }
 
     //public override IEnumerator Ani()

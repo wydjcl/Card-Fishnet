@@ -27,8 +27,8 @@ public class Player : Character
         netPlayer = Owner.FirstObject.GetComponent<NetworkPlayer>();//他的网络玩家对象
         if (IsServerStarted)//服务端给他基础属性赋值,需整合
         {
-            maxMana.Value = 3;
-            mana.Value = 3;//初始法力值,需修改
+            maxMana.Value = 10;
+            mana.Value = 10;//初始法力值,需修改
             isPlayer.Value = true;
             InitDataRpc(characterId.Value);//根据角色id改变特殊属性
         }
@@ -55,10 +55,10 @@ public class Player : Character
     {
         if (i == 0)
         {
-            maxHealth.Value = 88;
-            health.Value = 88;
-            attack.Value = 6;
-            defense.Value = 10;
+            maxHealth.Value = 880;
+            health.Value = 880;
+            attack.Value = 8;
+            defense.Value = 0;
         }
         if (i == 1)
         {
@@ -107,7 +107,10 @@ public class Player : Character
         buffList.Clear();
         block.Value = 0;
         faith.Value = 0;
+        faithDouble.Value = false;
         thorn.Value = 0;
+        attackEx.Value = 0;
+        defenseEx.Value = 0;
     }
 
 

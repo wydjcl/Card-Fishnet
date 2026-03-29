@@ -125,6 +125,7 @@ public class CardPhysicallyEffect : MonoBehaviour, IBeginDragHandler, IDragHandl
         {
             return;
         }
+        card.cardDesText.text = RichTextHelper.ReplaceValues(card.dataSO.cardDes, card.player.myPlayer.attack.Value + card.player.myPlayer.attackEx.Value);
         var s = card.GetComponent<SortingGroup>();
         s.sortingOrder = 999;
         if (!isDrag)

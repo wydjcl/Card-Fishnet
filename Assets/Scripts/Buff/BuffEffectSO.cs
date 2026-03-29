@@ -27,4 +27,13 @@ public abstract class BuffEffectSO : ScriptableObject
     {
 
     }
+    /// <summary>
+    /// 每回合-1的效果,例如力量buff-1就会少1点力量
+    /// </summary>
+    /// <param name="caster"></param>
+    /// <param name="stack"></param>
+    public virtual void LessOneEffect(Character caster)
+    {
+
+    }
 }

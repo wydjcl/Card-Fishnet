@@ -10,5 +10,8 @@ public class CardDataSO : ScriptableObject
     public Sprite cardImage;
     [TextArea]
     public string cardDes;
+
+    [TextArea]
+    public string cardUIDes;
     public List<CardEffectSO> effects;
 }
