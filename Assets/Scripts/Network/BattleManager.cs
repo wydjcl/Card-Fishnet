@@ -32,6 +32,10 @@ public class BattleManager : NetworkBehaviour
     public List<Enemy> enemies = new();
 
     // public TurnState turnState;
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public override void OnStartServer()
     {
@@ -45,7 +49,6 @@ public class BattleManager : NetworkBehaviour
         agreeCount.OnChange += AgreeCount_OnChange;
         turnState.OnChange += TurnState_OnChange;
         turnCount.OnChange += TurnCount_OnChange;
-        Instance = this;
     }
 
 
@@ -67,6 +70,21 @@ public class BattleManager : NetworkBehaviour
         isAgree = false;
         turnButtomText.text = $"回合结束{agreeCount.Value}/{totalPlayers.Value}";
         ReadyToBattle();
+
+        //客户端获得对象
+        //enemies.Clear();
+        //players.Clear();
+        //foreach (var netObj in InstanceFinder.ServerManager.Objects.Spawned.Values)
+        //{
+        //    if (netObj.TryGetComponent<Player>(out Player player))
+        //    {
+        //        players.Add(player);
+        //    }
+        //    if (netObj.TryGetComponent<Enemy>(out Enemy enemy))
+        //    {
+        //        enemies.Add(enemy);
+        //    }
+        //}
     }
     [ServerRpc(RequireOwnership = false)]
     public void ReadyToBattle()
@@ -78,19 +96,7 @@ public class BattleManager : NetworkBehaviour
             Debug.Log("全部玩家加载完成,开始回合开始阶段");
             readyToBattlePlayerCount = 0;
 
-            enemies.Clear();
-            players.Clear();
-            foreach (var netObj in InstanceFinder.ServerManager.Objects.Spawned.Values)
-            {
-                if (netObj.TryGetComponent<Player>(out Player player))
-                {
-                    players.Add(player);
-                }
-                if (netObj.TryGetComponent<Enemy>(out Enemy enemy))
-                {
-                    enemies.Add(enemy);
-                }
-            }
+
             EnterState(TurnState.PlayerTurnStart);
         }
     }
@@ -167,7 +173,7 @@ public class BattleManager : NetworkBehaviour
     [Server]
     private void EnterState(TurnState state)
     {
-        Debug.Log("现在是" + state.ToString());
+        //Debug.Log("现在是" + state.ToString());
         turnState.Value = state;
         switch (state)
         {
@@ -252,7 +258,15 @@ public class BattleManager : NetworkBehaviour
 
     private IEnumerator EnemyActs()
     {
+        var aliveEnemies = new List<Enemy>();
         foreach (var e in enemies)
+        {
+            if (!e.isDead.Value)
+            {
+                aliveEnemies.Add(e);
+            }
+        }
+        foreach (var e in aliveEnemies)
         {
             // 等待当前敌人的 Act 协程执行完再执行下一个
             yield return StartCoroutine(e.Act());
@@ -282,11 +296,7 @@ public class BattleManager : NetworkBehaviour
                 return;//有没死亡的
             }
         }
-        foreach (var e in enemies)
-        {
-            Destroy(e.gameObject);
-        }
-        enemies.Clear();
+
         ClientWin();
         networkMapSceneManager.EndBattle();
     }
@@ -297,6 +307,12 @@ public class BattleManager : NetworkBehaviour
     public void ClientWin()
     {
         player.DestroyCard();
+        foreach (var e in enemies)
+        {
+            Destroy(e.gameObject);
+        }
+
+        enemies.Clear();
     }
 
 

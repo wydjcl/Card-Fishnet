@@ -1,19 +1,18 @@
-using DG.Tweening;
 using FishNet.Object;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalSkull : Enemy
+public class WildBoar : Enemy
 {
     public override void OnStartClient()
     {
         base.OnStartClient();
         if (IsServerStarted)
         {
-            maxHealth.Value = 66;
-            health.Value = 66;//以后改
-            attack.Value = 10;
+            maxHealth.Value = 50;
+            health.Value = 50;//以后改
+            attack.Value = 15;
             skillNum.Value = 0;
             maxSkillNum.Value = 2;
             // ChangeIntentionText($"攻击{attack.Value + attackEx.Value}");
@@ -47,29 +46,17 @@ public class NormalSkull : Enemy
         }
         else if (skillNum.Value == 1)
         {
-            this.CauseDamageRpc(BattleManager.Instance.FindPlayer(), attack.Value + attackEx.Value);
             NextSkill();
         }
         else if (skillNum.Value == 2)
         {
-            Buff b = new Buff();
-            b.buffName = "力量";
-            b.buffStack = 3;
-            b.forever = true;
-            AddBuffRpc(b);
             NextSkill();
         }
         yield return null;
     }
 
-    public override void NextSkill()
-    {
-        base.NextSkill();
-
-    }
-
     [Client]
-    public override void ClientChangeIntentionBySkill()
+    public override void ClientChangeIntentionBySkill()//冲锋15→休整→休整→冲锋15
     {
         base.ClientChangeIntentionBySkill();
         if (skillNum.Value == 0)
@@ -78,34 +65,13 @@ public class NormalSkull : Enemy
         }
         if (skillNum.Value == 1)
         {
-            IntentionText.text = ($"攻击{attack.Value + attackEx.Value}");
+            IntentionText.text = ($"休整");
         }
         if (skillNum.Value == 2)
         {
-            IntentionText.text = ($"强化");
+            IntentionText.text = ($"休整");
         }
     }
-    //public override IEnumerator Ani()
-    //{
-    //    // 假设是缩放目标
-    //    Transform target = this.transform;
-
-    //    // 初始缩放
-    //    Vector3 originalScale = target.localScale;
-
-    //    // 使用 DOTween 创建缩小 -> 放大动画
-    //    // 注意 DOTween 动画不是 IEnumerator，需要 yield return WaitForCompletion
-    //    Tween tween = target
-    //        .DOScale(originalScale * 0.5f, 0.2f)  // 缩小到 0.5 倍，持续 0.2 秒
-    //        .SetLoops(2, LoopType.Yoyo);          // Yoyo 表示缩小完再放大回原始大小
-
-    //    // 等待动画完成
-    //    yield return tween.WaitForCompletion();
-
-    //    // 动画完成后继续协程
-    //    Debug.Log(name + " Ani 动画完成");
-
-    //}
     public override void AttackEx_OnChange(int prev, int next, bool asServer)
     {
         base.AttackEx_OnChange(prev, next, asServer);

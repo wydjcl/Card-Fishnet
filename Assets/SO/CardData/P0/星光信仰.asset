@@ -10,14 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0cc9293be540d44097ddd6faf927455, type: 3}
-  m_Name: "\u8346\u68D8\u76FE"
+  m_Name: "\u661F\u5149\u4FE1\u4EF0"
   m_EditorClassIdentifier: 
   cardID: 4
-  cardName: "\u8346\u68D8\u76FE"
-  cardCost: 1
+  cardName: "\u661F\u5149\u4FE1\u4EF0"
+  cardCost: 0
   cardType: 1
-  cardImage: {fileID: 21300000, guid: d0e426edd3a3bc349a38b4f9310f1d81, type: 3}
-  cardDes: "\u83B7\u5F975\u8346\u68D8"
+  cardImage: {fileID: 21300000, guid: 8b38ab5b6e9f87748a793f66f3dd8bbe, type: 3}
+  cardDes: "\u83B7\u5F972\u70B9\u4FE1\u4EF0"
+  cardUIDes: 
   effects:
-  - {fileID: 11400000, guid: 8b5ce6734aaaf8348ad68b9c2b1e9d4f, type: 2}
+  - {fileID: 11400000, guid: b22e71eb5eeb94745af3704b201f3e34, type: 2}
+  - {fileID: 11400000, guid: b22e71eb5eeb94745af3704b201f3e34, type: 2}
   - {fileID: 11400000, guid: 251434be667844543bd4a812ec80c54b, type: 2}

@@ -26,11 +26,14 @@ public class DynamicText : MonoBehaviour
         Sequence seq = DOTween.Sequence();
         seq.Append(transform.DOMove(new Vector3(start.x + 0.1f, start.y + 2.1f, 0), 0.19f).SetEase(Ease.OutQuad)
         );
+        seq.SetLink(transform.gameObject);
         // 结束后销毁
         seq.OnComplete(() =>
         {
             Destroy(gameObject);
-        });
+        })
+
+            ;
     }
 
 

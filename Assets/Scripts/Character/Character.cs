@@ -6,6 +6,7 @@ using FishNet.Object.Synchronizing;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Sequence = DG.Tweening.Sequence;
 
@@ -66,7 +67,7 @@ public class Character : NetworkBehaviour
         Debug.Log("buff长度" + buffList.Count);
         Debug.Log("buff名字" + buffList[0].buffName);
         Debug.Log("buffstack" + buffList[0].buffStack);
-        // Debug.Log("力:" + attack.Value + attackEx.Value);
+        Debug.Log("力:" + attack.Value + "/" + attackEx.Value);
     }
     [ContextMenu("移除buff")]
     public void Test6()
@@ -77,6 +78,11 @@ public class Character : NetworkBehaviour
     public void Test7()
     {
         block.Value = 999;
+    }
+    [ContextMenu("读取护甲")]
+    public void Test8()
+    {
+        Debug.Log("护甲值" + defense.Value + "/" + defenseEx.Value);
     }
 
     #region 生命周期
@@ -94,7 +100,10 @@ public class Character : NetworkBehaviour
         isDead.OnChange += IsDead_OnChange;
         faith.OnChange += Faith_OnChange;
         thorn.OnChange += Thorn_OnChange;
+        attackEx.OnChange += AttackEx_OnChange;
         dynamicText = Resources.Load<GameObject>("DynamicTextPrefab");
+
+
     }
 
 
@@ -108,6 +117,23 @@ public class Character : NetworkBehaviour
         isDead.OnChange -= IsDead_OnChange;
         faith.OnChange -= Faith_OnChange;
         thorn.OnChange -= Thorn_OnChange;
+        attackEx.OnChange -= AttackEx_OnChange;
+
+    }
+    private void Update()
+    {
+        if (BattleManager.Instance == null)
+        {
+            return;
+        }
+
+        if (isPlayer.Value)
+        {
+            if (!BattleManager.Instance.players.Contains(this as Player))
+            {
+                BattleManager.Instance.players.Add(this as Player);
+            }
+        }
     }
     protected virtual void OnDestroy()
     {
@@ -149,7 +175,7 @@ public class Character : NetworkBehaviour
             }
             else
             {
-                gameObject.SetActive(false);
+                ClientDead();
                 BattleManager.Instance.ServerCheckWin();
             }
         }
@@ -236,7 +262,11 @@ public class Character : NetworkBehaviour
             buff.forever = false;
             AddBuffRpc(buff);
         }
-
+    }
+    [ObserversRpc]
+    public void ClientDead()
+    {
+        gameObject.SetActive(false);
     }
     [ServerRpc(RequireOwnership = false)]
     public virtual void HealRpc(int i)
@@ -309,6 +339,7 @@ public class Character : NetworkBehaviour
             }
 
         }
+        Debug.Log("buff增加" + attackEx.Value);
     }
     [ServerRpc(RequireOwnership = false)]
     public void RemoveBuffRpc(string newBuffName)
@@ -356,7 +387,7 @@ public class Character : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void CalBuff()
     {
-        Debug.Log("检查buff");
+        //Debug.Log("检查buff");
         for (int i = buffList.Count - 1; i >= 0; i--)
         {
             foreach (var so in Dic.Instance.buffs)
@@ -482,6 +513,10 @@ public class Character : NetworkBehaviour
     private void Faith_OnChange(int prev, int next, bool asServer)
     {
         _faith = faith.Value;
+    }
+    public virtual void AttackEx_OnChange(int prev, int next, bool asServer)
+    {
+
     }
     #endregion
 }

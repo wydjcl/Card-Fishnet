@@ -10,7 +10,7 @@ public class BagUI : MonoBehaviour
     public NetworkPlayer player;
     private void OnEnable()
     {
-        Debug.Log("打开背包UI");
+        //Debug.Log("打开背包UI");
         player = InstanceFinder.ClientManager.Connection.FirstObject.GetComponent<NetworkPlayer>();
 
         CreateCard();

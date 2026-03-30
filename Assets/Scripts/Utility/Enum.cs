@@ -74,12 +74,11 @@ public enum GameState
     CardBag,
 }
 
-public enum Quality
+public enum CardQuality
 {
-    Ordinary,
-    Excellent,
-    Rare,
-    Epic,
-    Legendary,
-    Mythical
+    White,
+    Green,
+    Blue,
+    Purple,
+    Gold,
 }

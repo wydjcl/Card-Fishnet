@@ -98,7 +98,7 @@ public class Player : Character
         mana.Value = i;
     }
     /// <summary>
-    /// 战斗完后清理buff和一些数据
+    /// Server战斗完后清理buff和一些数据
     /// </summary>
     [Server]
 

@@ -1,18 +1,35 @@
 using DG.Tweening;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using TMPro;
 using UnityEngine;
 
 public class Enemy : Character
 {
+    public TextMeshPro IntentionText;
+
+    public readonly SyncVar<int> skillNum = new SyncVar<int>();
+    public readonly SyncVar<int> maxSkillNum = new SyncVar<int>();
+    float timer = 0;
     public override void OnStartClient()
     {
         base.OnStartClient();
         BattleUIRoot battleUIRoot = FindObjectOfType<BattleUIRoot>();
 
         transform.SetParent(battleUIRoot.transform);
+        Transform t = transform.Find("IntentionText");
+        healthText = transform.Find("HealthText").GetComponent<TextMeshPro>();
+        blockText = transform.Find("BlockText").GetComponent<TextMeshPro>();
+        characterSprite = transform.Find("EnemySprite").GetComponent<SpriteRenderer>();
+        if (t != null)
+        {
+            IntentionText = t.GetComponent<TextMeshPro>();
+            IntentionText.text = "修改成功";
+        }
+        BattleManager.Instance.enemies.Add(this);
     }
     public virtual IEnumerator Act()
     {
@@ -41,6 +58,30 @@ public class Enemy : Character
         //Debug.Log(name + " Ani 动画完成");
 
     }
+    [Server]
+    public virtual void NextSkill()
+    {
+        skillNum.Value++;
+        if (skillNum.Value > maxSkillNum.Value)
+        {
+            skillNum.Value = 0;
+        }
+    }
+
+    [ObserversRpc]
+    public virtual void ChangeIntentionText(string text)
+    {
+        if (IntentionText != null)
+        {
+            IntentionText.text = text;
+        }
+    }
+
+    [Client]
+    public virtual void ClientChangeIntentionBySkill()
+    {
+        // Debug.Log("改变意图" + skillNum.Value);
+    }
     [ObserversRpc]
     public virtual void ClientAni()
     {
@@ -49,5 +90,19 @@ public class Enemy : Character
             return;
         }
         StartCoroutine(Ani());
+    }
+    void Update()
+    {
+        //if (!IsServerStarted)
+        //{
+        //    return;
+        //}
+        timer += Time.deltaTime;
+
+        if (timer >= 1f)
+        {
+            timer = 0f;
+            ClientChangeIntentionBySkill();
+        }
     }
 }

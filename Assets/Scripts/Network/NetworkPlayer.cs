@@ -1,9 +1,11 @@
 using DG.Tweening;
 using FishNet;
+using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -13,7 +15,9 @@ public class NetworkPlayer : NetworkBehaviour
     [Header("同步数据区")]
     public readonly SyncVar<int> connID = new SyncVar<int>();
     public readonly SyncVar<int> characterId = new SyncVar<int>();
+    public readonly SyncVar<int> coin = new SyncVar<int>();
     public readonly SyncList<string> deck = new SyncList<string>();
+
     [Header("需要导入的实例")]
     public GameObject cardPrefab;
     public CardLayout cardLayout;
@@ -30,6 +34,8 @@ public class NetworkPlayer : NetworkBehaviour
     public int _characterId;
     public int _connID;
     public List<string> _deck;
+    public int _coin;
+    #region 生命周期
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -45,10 +51,15 @@ public class NetworkPlayer : NetworkBehaviour
         connID.OnChange += OnConnIDChanged;
         characterId.OnChange += OnCharacterIdChanged;
         deck.OnChange += OnDeckChanged;
-
+        coin.OnChange += Coin_OnChange;
     }
-
-
+    private void OnDestroy()
+    {
+        deck.OnChange -= OnDeckChanged;
+        connID.OnChange -= OnConnIDChanged;
+        characterId.OnChange -= OnCharacterIdChanged;
+    }
+    #endregion
 
     [ContextMenu("改变角色id为0")]
     [Client]
@@ -67,6 +78,8 @@ public class NetworkPlayer : NetworkBehaviour
     {
         characterId.Value = id;
     }
+    #region 卡牌相关
+
     /// <summary>
     /// 客户端调用,服务端执行初始化该卡组
     /// </summary>
@@ -75,22 +88,29 @@ public class NetworkPlayer : NetworkBehaviour
     {
         if (characterId.Value == 0)
         {
-            deck.Add("给你一拳");
-            deck.Add("基础防御术式");
-            deck.Add("发现宝箱");
-            deck.Add("发现宝箱");
-            deck.Add("发现宝箱");
-            deck.Add("发现宝箱");
-            deck.Add("还不能放弃");
-            deck.Add("狂热信仰");
-            deck.Add("信仰一击");
-            deck.Add("临阵磨剑");
-            deck.Add("我身为盾");
-            deck.Add("荆棘盾");
+            //deck.Add("给你一拳");
+            //deck.Add("基础防御术式");
+            //deck.Add("发现宝箱");
+            //deck.Add("发现宝箱");
+            //deck.Add("发现宝箱");
+            //deck.Add("发现宝箱");
+            //deck.Add("还不能放弃");
+            //deck.Add("狂热信仰");
+            //deck.Add("信仰一击");
+            //deck.Add("临阵磨剑");
+            //deck.Add("我身为盾");
+            //deck.Add("荆棘盾");
+            //deck.Add("旋风斩");
+            //deck.Add("星光信仰");
+            //deck.Add("战争怒吼");
+            //deck.Add("奇怪的药剂");
+            //deck.Add("战斗姿态");
+            //deck.Add("保护");
+
             deck.Add("旋风斩");
-            deck.Add("星光信仰");
-            deck.Add("战争怒吼");
-            deck.Add("奇怪的药剂");
+            deck.Add("旋风斩");
+            deck.Add("旋风斩");
+
         }
         if (characterId.Value == 1)
         {
@@ -102,7 +122,11 @@ public class NetworkPlayer : NetworkBehaviour
             deck.Add("基础防御术式");
         }
     }
-
+    [ServerRpc(RequireOwnership = false)]
+    public void AddCard(string cardName)
+    {
+        deck.Add(cardName);
+    }
     [ContextMenu("创建卡牌")]
     [Client]
     public void CreateCard()
@@ -126,6 +150,35 @@ public class NetworkPlayer : NetworkBehaviour
         }
         ShuffleDrawDeck();
     }
+    /// <summary>
+    /// 为该连接玩家增加单张卡片,i为0的时候弃牌堆,i为1的时候抽牌堆,i为2的时候除外堆
+    /// </summary>
+    /// <param name="conn"></param>
+    [TargetRpc]
+    public void CreateOneCard(NetworkConnection conn, string cardName, int i)
+    {
+        Debug.Log("只有这个玩家执行了方法！");
+        // 这里写客户端逻辑，比如播放动画、显示 UI
+        if (i == 0)
+        {
+            Debug.Log("在弃牌堆插入");
+            var cardP = Instantiate(cardPrefab, cardLayout.transform);
+            cardP.SetActive(false);
+            Card card = cardP.GetComponent<Card>();
+            var so = Dic.Instance.FindCard(cardName);
+            card.InitCard(so);
+            discardDeck.Add(card);
+        }
+        if (i == 1)
+        {
+            Debug.Log("在抽牌堆插入");
+        }
+        if (i == 2)
+        {
+            Debug.Log("在除外堆插入");
+        }
+    }
+
 
     public void DestroyCard()
     {
@@ -153,7 +206,7 @@ public class NetworkPlayer : NetworkBehaviour
                 if (discardDeck.Count == 0)
                 {
                     Debug.Log("抽牌堆和弃牌堆都空了，无法继续抽牌");
-                    return;
+                    break;
                 }
                 Debug.Log("抽牌堆为空,洗牌");
                 // 洗回抽牌堆
@@ -163,7 +216,7 @@ public class NetworkPlayer : NetworkBehaviour
             if (drawDeck.Count == 0)
             {
                 Debug.Log("洗牌后抽牌堆仍为空");
-                return;
+                break;
             }
             // 现在抽牌堆一定有牌，抽一张
             Card card = drawDeck[0];
@@ -172,8 +225,7 @@ public class NetworkPlayer : NetworkBehaviour
             card.gameObject.SetActive(true);
             card.transform.position = new Vector3(0, 0, 0);
             card.isAni = true;
-            var delay = i * 0.1f;
-            // SetCardLayout(delay);
+            //var delay = i * 0.1f;
         }
         SetCardLayout(0);
     }
@@ -186,7 +238,6 @@ public class NetworkPlayer : NetworkBehaviour
         }//删去所有卡牌的动画
         for (int i = 0; i < handDeck.Count; i++)
         {
-
             var currentCard = handDeck[i];
             CardTransForm cardTransForm = cardLayout.GetCardTransForm(i, handDeck.Count);
             currentCard.transform.DOScale(Vector3.one, 0.05f).SetDelay(delay).onComplete = () =>
@@ -257,8 +308,18 @@ public class NetworkPlayer : NetworkBehaviour
         SetCardLayout(0f);
     }
 
+    #endregion
 
-
+    [ServerRpc(RequireOwnership = false)]
+    public void GetCoin(int i)
+    {
+        coin.Value += i;
+    }
+    [ContextMenu("增加10金币")]
+    public void test()
+    {
+        GetCoin(10);
+    }
 
 
     private void OnConnIDChanged(int prev, int next, bool asServer)
@@ -279,6 +340,24 @@ public class NetworkPlayer : NetworkBehaviour
         _deck.Clear();
         _deck.AddRange(deck);
     }
+
+    private void Coin_OnChange(int prev, int next, bool asServer)
+    {
+        _coin = coin.Value;
+        if (IsOwner)
+        {
+            TextMeshProUGUI t = GameObject.Find("CoinText")?.GetComponent<TextMeshProUGUI>();
+            if (t != null)
+            {
+                t.text = $"金币:{coin.Value}";
+            }
+            else
+            {
+                Debug.Log("没有找到Text");
+            }
+        }
+
+    }
     [ContextMenu("Debug")]
     public void DebugAllData()
     {
@@ -288,10 +367,6 @@ public class NetworkPlayer : NetworkBehaviour
         }
         _characterId = characterId.Value;
     }
-    private void OnDestroy()
-    {
-        deck.OnChange -= OnDeckChanged;
-        connID.OnChange -= OnConnIDChanged;
-        characterId.OnChange -= OnCharacterIdChanged;
-    }
+
+
 }
