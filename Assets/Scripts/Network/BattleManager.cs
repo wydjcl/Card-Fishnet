@@ -1,9 +1,11 @@
 using FishNet;
+using FishNet.Managing;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -162,11 +164,13 @@ public class BattleManager : NetworkBehaviour
         }
         if (tauntList.Count > 0)
         {
-            return tauntList[UnityEngine.Random.Range(0, players.Count)];
+            return tauntList[UnityEngine.Random.Range(0, tauntList.Count)];
         }
+        else
         {
-            return players[UnityEngine.Random.Range(0, players.Count)];
+            return aliveList[UnityEngine.Random.Range(0, aliveList.Count)];
         }
+
     }
     #region 一些战斗方法,比如aoe攻击
     public void AoeAttack(Character caster, List<Character> targets, int damageAmount)
@@ -289,9 +293,10 @@ public class BattleManager : NetworkBehaviour
     /// <summary>
     /// 切换到下一个状态
     /// </summary>
-    public void NextState()
+    public async void NextState()
     {
         // 枚举循环
+        await Task.Delay(200);
         int next = ((int)turnState.Value + 1) % Enum.GetValues(typeof(TurnState)).Length;
         //turnState.Value = (TurnState)next;
         EnterState((TurnState)next);
@@ -306,12 +311,20 @@ public class BattleManager : NetworkBehaviour
     [ObserversRpc]
     public void ClientPlayerTurnStart()
     {
-        player.DrawCard(7);
-        player.myPlayer.ChangeManaRpc(player.myPlayer.maxMana.Value);
-        player.myPlayer.DeleteBlockRpc();
-        player.myPlayer.RemoveBuffRpc("临时力量");
-        player.myPlayer.RemoveBuffRpc("临时坚韧");
-        player.myPlayer.CalBuff();
+        if (Dic.Instance.player.myPlayer.isDead.Value)
+        {
+
+        }
+        else
+        {
+            player.DrawCard(5);
+            player.myPlayer.ChangeManaRpc(player.myPlayer.maxMana.Value);
+            player.myPlayer.DeleteBlockRpc();
+            player.myPlayer.RemoveBuffRpc("临时力量");
+            player.myPlayer.RemoveBuffRpc("临时坚韧");
+            player.myPlayer.CalBuff();
+        }
+
         isAgree = false;
         turnButtomText.text = $"回合结束{agreeCount.Value}/{totalPlayers.Value}";
     }
@@ -438,12 +451,34 @@ public class BattleManager : NetworkBehaviour
         {
             Destroy(e.gameObject);
         }
+        if (player.myPlayer.isDead.Value)
+        {
+            player.myPlayer.TakeAlive();
+        }
 
         enemies.Clear();
-        networkMapSceneManager.upText.text = $"地图";
+        networkMapSceneManager.upText.text = $"地图{networkMapSceneManager.level.y}";
     }
+    [Server]
+    public void ServerCheckLose()
+    {
+        foreach (var p in players)
+        {
+            if (!p.isDead.Value)
+            {
+                return;//有没死亡的
+            }
+        }
 
-
+        ClientLose();
+    }
+    [ObserversRpc]
+    public void ClientLose()
+    {
+        InstanceFinder.ServerManager.StopConnection(true);
+        InstanceFinder.ClientManager.StopConnection();
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+    }
     #region 同步数据变换回调
     private void AgreeCount_OnChange(int prev, int next, bool asServer)
     {

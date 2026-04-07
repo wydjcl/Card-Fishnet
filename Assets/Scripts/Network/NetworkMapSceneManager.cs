@@ -144,9 +144,11 @@ public class NetworkMapSceneManager : NetworkBehaviour
         }
         //Debug.Log("展示战斗奖励");
         StartRewardRpc();
-        //改变房间
-        CheckRooms();
-
+        //改变房间'
+        if (IsServerStarted)
+        {
+            CheckRooms();
+        }
     }
 
     /// <summary>
@@ -225,7 +227,10 @@ public class NetworkMapSceneManager : NetworkBehaviour
     public void StartShopRpc()
     {
         shopUI.gameObject.SetActive(true);
-        CheckRooms();
+        if (IsServerStarted)
+        {
+            CheckRooms();
+        }
     }
     #endregion
     #region 开关地图节点和战斗节点

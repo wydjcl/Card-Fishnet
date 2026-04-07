@@ -7,7 +7,6 @@ using static Unity.VisualScripting.Member;
 
 public class Dic : SingletonMono<Dic>
 {
-    [HideInInspector]
     public NetworkPlayer player;
     [Header("卡牌数据字典")]
     public List<CardDataSO> cardDataSOs = new List<CardDataSO>();

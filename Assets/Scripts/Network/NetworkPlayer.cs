@@ -42,9 +42,10 @@ public class NetworkPlayer : NetworkBehaviour
         if (IsOwner)
         {
             name = "玩家体";
+            Dic.Instance.player = this;
         }
         name = "玩家" + Owner.ClientId;//方便测试
-        Dic.Instance.player = this;
+
         if (IsServerStarted)
         {
             connID.Value = Owner.ClientId;
@@ -98,9 +99,9 @@ public class NetworkPlayer : NetworkBehaviour
             deck.Add("基础防御术式");
             deck.Add("基础防御术式");
             deck.Add("基础防御术式");
-            deck.Add("基础防御术式");
+            deck.Add("发现宝箱");
             deck.Add("保护");
-            //deck.Add("发现宝箱");
+
             //deck.Add("发现宝箱");
             //deck.Add("发现宝箱");
             //deck.Add("发现宝箱");
@@ -142,6 +143,7 @@ public class NetworkPlayer : NetworkBehaviour
             deck.Add("基础防御术式");
             deck.Add("基础防御术式");
             deck.Add("基础防御术式");
+            deck.Add("发现宝箱");
             deck.Add("冰锥术");
         }
     }

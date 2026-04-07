@@ -176,6 +176,11 @@ public class Character : NetworkBehaviour
             if (isPlayer.Value)
             {
                 Debug.Log("玩家死亡");
+                BattleManager.Instance.ServerCheckLose();
+                if (IsOwner)
+                {
+                    Dic.Instance.player.DiscardAllCards();
+                }
             }
             else
             {
@@ -307,6 +312,21 @@ public class Character : NetworkBehaviour
             health.Value = maxHealth.Value;
         }
     }
+    [ServerRpc(RequireOwnership = false)]
+    public virtual void ChangeHealthRpc(int i)
+    {
+        health.Value = i;
+    }
+    [ServerRpc(RequireOwnership = false)]
+    public virtual void TakeAlive()
+    {
+        isDead.Value = false;
+        if (health.Value <= 0)
+        {
+            health.Value = 1;
+        }
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public virtual void TakeBlockRpc(int i)
     {
