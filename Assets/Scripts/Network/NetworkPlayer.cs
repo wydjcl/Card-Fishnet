@@ -89,8 +89,17 @@ public class NetworkPlayer : NetworkBehaviour
     {
         if (characterId.Value == 0)
         {
-            //deck.Add("给你一拳");
-            //deck.Add("基础防御术式");
+            deck.Add("给你一拳");
+            deck.Add("给你一拳");
+            deck.Add("给你一拳");
+            deck.Add("给你一拳");
+            deck.Add("给你一拳");
+            deck.Add("基础防御术式");
+            deck.Add("基础防御术式");
+            deck.Add("基础防御术式");
+            deck.Add("基础防御术式");
+            deck.Add("基础防御术式");
+            deck.Add("保护");
             //deck.Add("发现宝箱");
             //deck.Add("发现宝箱");
             //deck.Add("发现宝箱");
@@ -106,21 +115,34 @@ public class NetworkPlayer : NetworkBehaviour
             //deck.Add("战争怒吼");
             //deck.Add("奇怪的药剂");
             //deck.Add("战斗姿态");
-            //deck.Add("保护");
 
-            deck.Add("旋风斩");
-            deck.Add("旋风斩");
-            deck.Add("旋风斩");
+            //deck.Add("旋风斩");
+            //deck.Add("旋风斩");
+            //deck.Add("旋风斩");
+
 
         }
         if (characterId.Value == 1)
         {
-            deck.Add("狂热信仰");
-            deck.Add("狂热信仰");
-            deck.Add("发现宝箱");
-            deck.Add("发现宝箱");
+            //deck.Add("发现宝箱");
+            //deck.Add("冻住不洗澡");
+            //deck.Add("冰锥术");
+            //deck.Add("冰锥术");
+            //deck.Add("永恒冰狱");
+            //deck.Add("冰霜风暴");
+            //deck.Add("寒冰盾");
+            //deck.Add("堆雪人");
+            //deck.Add("一起受冻~");
+            deck.Add("给你一拳");
+            deck.Add("给你一拳");
+            deck.Add("给你一拳");
+            deck.Add("给你一拳");
+            deck.Add("给你一拳");
             deck.Add("基础防御术式");
             deck.Add("基础防御术式");
+            deck.Add("基础防御术式");
+            deck.Add("基础防御术式");
+            deck.Add("冰锥术");
         }
     }
     [ServerRpc(RequireOwnership = false)]
@@ -128,6 +150,12 @@ public class NetworkPlayer : NetworkBehaviour
     {
         deck.Add(cardName);
     }
+    [ServerRpc(RequireOwnership = false)]
+    public void DeleteCard(string cardName)
+    {
+        deck.Remove(cardName);
+    }
+
     [ContextMenu("创建卡牌")]
     [Client]
     public void CreateCard()

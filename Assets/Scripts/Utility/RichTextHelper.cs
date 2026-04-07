@@ -28,7 +28,17 @@ public static class RichTextHelper
                     return Mathf.CeilToInt(result).ToString();
                 }
             }
+            //if (expr.StartsWith("攻击力*"))
+            //{
+            //    string factorStr = expr.Substring("攻击力*".Length);
 
+            //    if (float.TryParse(factorStr, out float factor))
+            //    {
+            //        float result = attackValue * factor;
+            //        //return result.ToString("0.##");
+            //        return Mathf.CeilToInt(result).ToString();
+            //    }
+            //}
             // 未来可扩展更多表达式
             return match.Value;
         });

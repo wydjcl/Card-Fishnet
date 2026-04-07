@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0cc9293be540d44097ddd6faf927455, type: 3}
+  m_Name: "\u4E00\u8D77\u53D7\u51BB~"
+  m_EditorClassIdentifier: 
+  cardID: 1
+  cardName: "\u4E00\u8D77\u53D7\u51BB~"
+  cardCost: 1
+  cardMagicCost: 50
+  cardCoin: 50
+  isMagic: 0
+  cardType: 1
+  cardQuality: 0
+  cardImage: {fileID: 21300000, guid: 5a1b49b01da2296479125adc1daeca97, type: 3}
+  cardDes: "\u6307\u5B9A\u654C\u4EBA\u4E0E\u81EA\u5DF1\u83B7\u5F9710\u5C42\u5BD2\u971C"
+  cardUIDes: 
+  effects:
+  - {fileID: 11400000, guid: 5d061435f4c93be4c999a9b4a86ecc63, type: 2}
+  - {fileID: 11400000, guid: 5c2ae0f1ada1e5e47aea64abc6cdff96, type: 2}
+  - {fileID: 11400000, guid: 251434be667844543bd4a812ec80c54b, type: 2}

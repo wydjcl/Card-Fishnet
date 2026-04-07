@@ -5,6 +5,7 @@ using UnityEngine;
 public class GiveBuff : CardEffectSO
 {
     public bool self;
+    public bool isAOE;
     public string _buffName;
     public int _buffStack;
     public bool _forever;
@@ -14,6 +15,14 @@ public class GiveBuff : CardEffectSO
         buff.buffName = _buffName;
         buff.buffStack = _buffStack;
         buff.forever = _forever;
+        if (isAOE)
+        {
+            foreach (var e in BattleManager.Instance.enemies)
+            {
+                e.AddBuffRpc(buff);
+            }
+            return;
+        }
         if (self)
         {
             caster.AddBuffRpc(buff);

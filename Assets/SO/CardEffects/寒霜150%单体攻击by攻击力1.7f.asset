@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f35efa157d4f13f44bfb6f2d7465497b, type: 3}
+  m_Name: "\u5BD2\u971C150%\u5355\u4F53\u653B\u51FBby\u653B\u51FB\u529B1.7f"
+  m_EditorClassIdentifier: 
+  damageValue: 6
+  byAttack: 1
+  damagePercent: 1.7
+  frostPercent: 1.5
+  isAOE: 0
+  giveFrost: 1
+  frostStack: 0

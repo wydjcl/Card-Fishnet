@@ -4,19 +4,23 @@ using UnityEngine;
 
 public class ShopUI : MonoBehaviour
 {
+    public static int deleteCount = 1;
+
     public ShopCardUI shopCardUI0;
     public ShopCardUI shopCardUI1;
     public ShopCardUI shopCardUI2;
     public ShopCardUI shopCardUI3;
     public ShopCardUI shopCardUI4;
 
+    public GameObject deleteUI;
     private void OnEnable()
     {
-        Init();
+        Init();//TODO删除只能删一次,退出不消耗次数
     }
 
     public void Init()
     {
+        deleteCount = 1;
         var r = Dic.Instance.GetCardsRandom(Dic.Instance.player.characterId.Value, 5);
         shopCardUI0.data = r[0];
         shopCardUI0.Init();
@@ -42,5 +46,22 @@ public class ShopUI : MonoBehaviour
     public void Quit()
     {
         gameObject.SetActive(false);
+    }
+
+    public void OpenDeleteUI()
+    {
+        if (Dic.Instance.player.coin.Value < 50)
+        {
+            return;
+        }
+        if (deleteCount > 0)
+        {
+            deleteUI.SetActive(true);
+            Dic.Instance.player.GetCoin(-50);
+        }
+        else
+        {
+            Debug.Log("删牌次数用光");
+        }
     }
 }

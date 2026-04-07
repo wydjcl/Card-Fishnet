@@ -14,6 +14,7 @@ public class ShopCardUI : MonoBehaviour, IPointerClickHandler
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI coinText;
     public TextMeshProUGUI costText;
+    public TextMeshProUGUI magicText;
     public TextMeshProUGUI desText;
     public void OnEnable()
     {
@@ -27,8 +28,17 @@ public class ShopCardUI : MonoBehaviour, IPointerClickHandler
             nameText.text = data.cardName;
             coinText.text = "$:" + data.cardCoin.ToString();
             costText.text = data.cardCost.ToString();
+            magicText.text = data.cardMagicCost.ToString();
             desText.text = data.cardDes;
             cardImage.sprite = data.cardImage;
+            if (data.isMagic)
+            {
+                costText.gameObject.SetActive(false);
+            }
+            else
+            {
+                magicText.gameObject.SetActive(false);
+            }
         }
     }
     public void OnPointerClick(PointerEventData eventData)

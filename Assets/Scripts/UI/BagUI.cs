@@ -8,6 +8,8 @@ public class BagUI : MonoBehaviour
     public GameObject cardUI;
     public GameObject content;
     public NetworkPlayer player;
+
+    public bool deleteMode;
     private void OnEnable()
     {
         //Debug.Log("打开背包UI");
@@ -31,12 +33,21 @@ public class BagUI : MonoBehaviour
             CardUI card = cardP.GetComponent<CardUI>();
 
             var so = Dic.Instance.FindCard(cardID);
-            card.cardCostText.text = so.cardCost.ToString();
-            card.cardDesText.text = so.cardDes.ToString();
-            card.cardNameText.text = so.cardName.ToString();
-            card.cardImage.sprite = so.cardImage;
-            //card.InitCard(so);
-            //drawDeck.Add(card);
+            //card.cardCostText.text = so.cardCost.ToString();
+            //card.cardDesText.text = so.cardDes.ToString();
+            //card.cardNameText.text = so.cardName.ToString();
+            //card.cardImage.sprite = so.cardImage;
+
+            card.Init(so);
+
+            card.canDelete = deleteMode;
+            card.bagUI = this.gameObject;
+
         }
+    }
+
+    public void Quit()
+    {
+        gameObject.SetActive(false);
     }
 }

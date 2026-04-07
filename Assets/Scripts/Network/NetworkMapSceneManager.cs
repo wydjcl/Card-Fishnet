@@ -111,15 +111,26 @@ public class NetworkMapSceneManager : NetworkBehaviour
     [Server]
     public void SpawnEnemyTest()
     {
+        int i = rng.Next(1, 4);
+
         int r1 = UnityEngine.Random.Range(0, Dic.Instance.enemies.Count);
         var e = Instantiate(Dic.Instance.enemies[r1]);
         e.gameObject.transform.position = new Vector2(6.5f, 2.7f);
         InstanceFinder.ServerManager.Spawn(e);
-
-        int r2 = UnityEngine.Random.Range(0, Dic.Instance.enemies.Count);
-        var e2 = Instantiate(Dic.Instance.enemies[r2]);
-        e2.gameObject.transform.position = new Vector2(0f, 2.7f);
-        InstanceFinder.ServerManager.Spawn(e2);
+        if (i >= 2)
+        {
+            int r2 = UnityEngine.Random.Range(0, Dic.Instance.enemies.Count);
+            var e2 = Instantiate(Dic.Instance.enemies[r2]);
+            e2.gameObject.transform.position = new Vector2(0f, 2.7f);
+            InstanceFinder.ServerManager.Spawn(e2);
+        }
+        if (i >= 3)
+        {
+            int r3 = UnityEngine.Random.Range(0, Dic.Instance.enemies.Count);
+            var e3 = Instantiate(Dic.Instance.enemies[r3]);
+            e3.gameObject.transform.position = new Vector2(-6.5f, 2.7f);
+            InstanceFinder.ServerManager.Spawn(e3);
+        }
     }
     [Server]
     public void EndBattle()
@@ -187,24 +198,28 @@ public class NetworkMapSceneManager : NetworkBehaviour
     public void StartRewardRpc()
     {
         rewardUI.gameObject.SetActive(true);
-        List<int> list = new List<int>();
-        for (int x = 0; x < Dic.Instance.GetCardsCount(player.characterId.Value); x++)
-        {
-            list.Add(x);
-        }
 
-        List<int> result = new List<int>();
-        //Debug.Log("list" + list.Count);
-        //Debug.Log($"Init: list={string.Join(",", list)}");
-        for (int k = 0; k < 3; k++)
-        {
-            int index = UnityEngine.Random.Range(0, list.Count);
-            result.Add(list[index]);
-            list.RemoveAt(index);
-        }
-        // Debug.Log($"Init: result={string.Join(",", result)}");
+        //List<int> list = new List<int>();
+        //for (int x = 0; x < Dic.Instance.GetCardsCount(player.characterId.Value); x++)
+        //{
+        //    list.Add(x);
+        //}
 
-        rewardUI.Init(result);
+        //List<int> result = new List<int>();
+        ////Debug.Log("list" + list.Count);
+        ////Debug.Log($"Init: list={string.Join(",", list)}");
+        //for (int k = 0; k < 3; k++)
+        //{
+        //    int index = UnityEngine.Random.Range(0, list.Count);
+        //    result.Add(list[index]);
+        //    list.RemoveAt(index);
+        //}
+        //// Debug.Log($"Init: result={string.Join(",", result)}");
+
+        //rewardUI.Init(result);
+
+        var l = Dic.Instance.GetCardsRandom(Dic.Instance.player.characterId.Value, 3);
+        rewardUI.Init(l);
     }
     [ObserversRpc]
     public void StartShopRpc()

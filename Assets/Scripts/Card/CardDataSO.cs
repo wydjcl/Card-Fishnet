@@ -6,7 +6,9 @@ public class CardDataSO : ScriptableObject
     public int cardID;
     public string cardName;
     public int cardCost;
+    public int cardMagicCost;
     public int cardCoin;
+    public bool isMagic;//是魔法卡
     public CardType cardType;
     public CardQuality cardQuality;
     public Sprite cardImage;

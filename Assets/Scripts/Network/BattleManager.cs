@@ -168,6 +168,96 @@ public class BattleManager : NetworkBehaviour
             return players[UnityEngine.Random.Range(0, players.Count)];
         }
     }
+    #region 一些战斗方法,比如aoe攻击
+    public void AoeAttack(Character caster, List<Character> targets, int damageAmount)
+    {
+        StartCoroutine(AoeAttackIE(caster, targets, damageAmount));
+    }
+    public void AoeAttack(Character caster, List<Enemy> targets, int damageAmount)
+    {
+        StartCoroutine(AoeAttackIE(caster, targets, damageAmount));
+    }
+    public void AoeAttack(Character caster, List<Enemy> targets, int damageAmount, bool isFrost, float frostAmount)
+    {
+        StartCoroutine(AoeAttackIE(caster, targets, damageAmount, isFrost, frostAmount));
+    }
+    public void AoeAttack(Character caster, List<Player> targets, int damageAmount)
+    {
+        StartCoroutine(AoeAttackIE(caster, targets, damageAmount));
+    }
+    IEnumerator AoeAttackIE(Character caster, List<Character> targets, int damageAmount)
+    {
+        for (int i = 0; i < targets.Count; i++)
+        {
+            var item = targets[i];
+            caster.CauseDamageRpc(item, damageAmount);
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+    /// <summary>
+    /// 对敌人aoe
+    /// </summary>
+    /// <param name="caster"></param>
+    /// <param name="targets"></param>
+    /// <param name="damageAmount"></param>
+    /// <returns></returns>
+    IEnumerator AoeAttackIE(Character caster, List<Enemy> targets, int damageAmount)
+    {
+        for (int i = 0; i < targets.Count; i++)
+        {
+            var item = targets[i];
+            caster.CauseDamageRpc(item, damageAmount);
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+    /// <summary>
+    /// 对敌人aoe重载
+    /// </summary>
+    /// <param name="caster"></param>
+    /// <param name="targets"></param>
+    /// <param name="damageAmount"></param>
+    /// <param name="isFrost"></param>
+    /// <param name="frostAmount"></param>
+    /// <returns></returns>
+    IEnumerator AoeAttackIE(Character caster, List<Enemy> targets, int damageAmount, bool isFrost, float frostAmount)
+    {
+        if (isFrost)//寒霜类攻击
+        {
+            for (int i = 0; i < targets.Count; i++)
+            {
+                var item = targets[i];
+                if (item.frost.Value > 0)
+                {
+                    caster.CauseDamageRpc(item, Mathf.CeilToInt(damageAmount * frostAmount));
+                }
+                else
+                {
+                    caster.CauseDamageRpc(item, Mathf.CeilToInt(damageAmount));
+                }
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < targets.Count; i++)
+            {
+                var item = targets[i];
+                caster.CauseDamageRpc(item, damageAmount);
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+    }
+    IEnumerator AoeAttackIE(Character caster, List<Player> targets, int damageAmount)
+    {
+        for (int i = 0; i < targets.Count; i++)
+        {
+            var item = targets[i];
+            caster.CauseDamageRpc(item, damageAmount);
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+    #endregion
 
     #region 玩家回合方法
     [Server]
@@ -234,8 +324,12 @@ public class BattleManager : NetworkBehaviour
     [ObserversRpc]
     public void ClientPlayerTurnEnd()
     {
-        player.DiscardAllCards();
+        if (!player.myPlayer.frostForever.Value)
+        {
+            player.myPlayer.RemoveBuffRpc("寒霜");
+        }
 
+        player.DiscardAllCards();
     }
 
     [Server]
@@ -268,6 +362,20 @@ public class BattleManager : NetworkBehaviour
         }
         foreach (var e in aliveEnemies)
         {
+
+            e.DeleteBlockRpc();
+            e.RemoveBuffRpc("临时力量");
+            e.RemoveBuffRpc("临时坚韧");
+            e.CalBuff();
+            if (e.isDead.Value)
+            {
+                continue;
+            }
+            if (e.freeze.Value)
+            {
+                e.RemoveBuffRpc("冻结");
+                continue;
+            }
             // 等待当前敌人的 Act 协程执行完再执行下一个
             yield return StartCoroutine(e.Act());
         }
@@ -282,6 +390,22 @@ public class BattleManager : NetworkBehaviour
     public void ServerEnemyTurnEnd()
     {
         //ClientPlayerTurnEnd();
+        var aliveEnemies = new List<Enemy>();
+        foreach (var e in enemies)
+        {
+            if (!e.isDead.Value)
+            {
+                aliveEnemies.Add(e);
+            }
+        }
+        foreach (var e in aliveEnemies)
+        {
+            //回合结束删除寒霜等buff
+            if (!e.frostForever.Value)
+            {
+                e.RemoveBuffRpc("寒霜");
+            }
+        }
         NextState();
     }
 

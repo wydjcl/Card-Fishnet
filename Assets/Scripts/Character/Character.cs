@@ -3,10 +3,8 @@ using FishNet;
 using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Sequence = DG.Tweening.Sequence;
 
@@ -31,6 +29,9 @@ public class Character : NetworkBehaviour
     public readonly SyncVar<int> faithEx = new SyncVar<int>();//信仰额外数值,增加信仰回复量
     public readonly SyncVar<bool> faithDouble = new SyncVar<bool>();//信仰回复量翻倍
     public readonly SyncVar<bool> taunt = new SyncVar<bool>();//信仰回复量翻倍
+    public readonly SyncVar<int> frost = new SyncVar<int>();//关键词:寒霜,减伤害,回合结束消失
+    public readonly SyncVar<bool> frostForever = new SyncVar<bool>();//关键词:永冻,寒霜不会再回合结束消失
+    public readonly SyncVar<bool> freeze = new SyncVar<bool>();//关键词:永冻,寒霜不会再回合结束消失
     [SerializeField]
     public readonly SyncList<Buff> buffList = new SyncList<Buff>();//预留bufflist
 
@@ -42,6 +43,7 @@ public class Character : NetworkBehaviour
     public bool _isDead;
     public bool _isPlayer;
     public int _thorn;
+    public int _frost;
     [Header("需要导入UI层")]
     public TextMeshPro healthText;
     public TextMeshPro blockText;
@@ -51,9 +53,9 @@ public class Character : NetworkBehaviour
     public void Test4()
     {
         Buff b = new Buff();
-        b.buffName = "临时力量";
+        b.buffName = "寒霜";
         b.buffStack = 5;
-        b.forever = false;
+        b.forever = true;
         AddBuffRpc(b);
         // buffList.Add(b);
     }
@@ -67,7 +69,7 @@ public class Character : NetworkBehaviour
         Debug.Log("buff长度" + buffList.Count);
         Debug.Log("buff名字" + buffList[0].buffName);
         Debug.Log("buffstack" + buffList[0].buffStack);
-        Debug.Log("力:" + attack.Value + "/" + attackEx.Value);
+        // Debug.Log("力:" + attack.Value + "/" + attackEx.Value);
     }
     [ContextMenu("移除buff")]
     public void Test6()
@@ -101,6 +103,7 @@ public class Character : NetworkBehaviour
         faith.OnChange += Faith_OnChange;
         thorn.OnChange += Thorn_OnChange;
         attackEx.OnChange += AttackEx_OnChange;
+        frost.OnChange += Frost_OnChange;
         dynamicText = Resources.Load<GameObject>("DynamicTextPrefab");
 
 
@@ -118,6 +121,7 @@ public class Character : NetworkBehaviour
         faith.OnChange -= Faith_OnChange;
         thorn.OnChange -= Thorn_OnChange;
         attackEx.OnChange -= AttackEx_OnChange;
+        frost.OnChange -= Frost_OnChange;
 
     }
     private void Update()
@@ -215,6 +219,25 @@ public class Character : NetworkBehaviour
             Debug.Log("目标不存在");
             return;
         }
+        if (frost.Value > 0)
+        {
+            Debug.Log("有寒霜值" + frost.Value);
+            if (frost.Value > i)
+            {
+
+                var b = new Buff();
+                b.buffName = "寒霜";
+                b.buffStack = -i;
+                AddBuffRpc(b);
+                i = 0;
+            }
+            else
+            {
+                RemoveBuffRpc("寒霜");
+                i -= frost.Value;
+            }
+        }
+
         if (target.thorn.Value > 0)
         {
             TakeDamege(this, target.thorn.Value, false);//如果目标身上有荆棘,就对自己造成无来源伤害
@@ -331,15 +354,16 @@ public class Character : NetworkBehaviour
                     if (so.buffName == buffList[i].buffName)
                     {
                         so.RemoveEffect(this, 0);
+                        Debug.Log("清除buff" + buffList[i].buffName);
                         buffList.RemoveAt(i);
                         break;
                     }
                 }
-                break;
+                //break;
             }
 
         }
-        Debug.Log("buff增加" + attackEx.Value);
+        //Debug.Log("buff增加" + attackEx.Value);
     }
     [ServerRpc(RequireOwnership = false)]
     public void RemoveBuffRpc(string newBuffName)
@@ -443,8 +467,20 @@ public class Character : NetworkBehaviour
         taunt.Value = i;
     }
 
-
-
+    [ServerRpc(RequireOwnership = false)]
+    public void TakeFrostRpc(int i)
+    {
+        frost.Value += i;
+    }
+    [ServerRpc(RequireOwnership = false)]
+    public void TakeFrostForeverRpc(bool b)
+    {
+        frostForever.Value = b;
+    }
+    public void TakeFreezeRpc(bool b)
+    {
+        freeze.Value = b;
+    }
     #endregion 服务端增改数值或Buff
     #region 同步数据回调
 
@@ -517,6 +553,11 @@ public class Character : NetworkBehaviour
     public virtual void AttackEx_OnChange(int prev, int next, bool asServer)
     {
 
+    }
+    private void Frost_OnChange(int prev, int next, bool asServer)
+    {
+        _frost = frost.Value;
+        Debug.Log("寒霜值改变" + _frost);
     }
     #endregion
 }

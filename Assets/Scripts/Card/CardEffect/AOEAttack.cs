@@ -1,3 +1,4 @@
+using GameKit.Dependencies.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,18 +10,13 @@ public class AOEAttack : CardEffectSO
     public float damagePercent = 1f;
     public override void ApplyEffect(Character caster, Character target, Card card, NetworkPlayer player)
     {
-        foreach (var c in BattleManager.Instance.enemies)
+        if (byAttack)
         {
-            if (byAttack)
-            {
-                caster.CauseDamageRpc(c, Mathf.CeilToInt((caster.attack.Value + caster.attackEx.Value) * damagePercent));
-            }
-            else
-            {
-                caster.CauseDamageRpc(c, damageValue);
-            }
+            BattleManager.Instance.AoeAttack(caster, BattleManager.Instance.enemies, Mathf.CeilToInt((caster.attack.Value + caster.attackEx.Value) * damagePercent));
         }
-
-
+        else
+        {
+            BattleManager.Instance.AoeAttack(caster, BattleManager.Instance.enemies, damageValue);
+        }
     }
 }

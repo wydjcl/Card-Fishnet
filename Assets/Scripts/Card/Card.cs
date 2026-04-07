@@ -16,6 +16,7 @@ public class Card : MonoBehaviour
     public TextMeshPro cardNameText;
     public TextMeshPro cardCostText;
     public TextMeshPro cardDesText;
+    public TextMeshPro cardMagicText;
     [Header("数据层")]
     public bool isAni = true;
     public Vector3 originalPosition;
@@ -30,6 +31,7 @@ public class Card : MonoBehaviour
     public int cardCost;
     public CardType cardType;
     public List<CardEffectSO> cardEffectSOs;
+    public bool isMagic;
     public void InitCard(CardDataSO so)
     {
         cardName = so.cardName;
@@ -38,11 +40,23 @@ public class Card : MonoBehaviour
         cardType = so.cardType;
         cardEffectSOs = so.effects;
         dataSO = so;
+        isMagic = so.isMagic;
 
         player = InstanceFinder.ClientManager.Connection.FirstObject.GetComponent<NetworkPlayer>();
         cardSprite.sprite = so.cardImage;
         cardNameText.text = so.cardName;
         cardCostText.text = so.cardCost.ToString();
+        cardMagicText.text = so.cardMagicCost.ToString();
+        if (isMagic)
+        {
+            cardMagicText.gameObject.SetActive(true);
+            cardCostText.gameObject.SetActive(false);
+        }
+        else
+        {
+            cardMagicText.gameObject.SetActive(false);
+            cardCostText.gameObject.SetActive(true);
+        }
 
         cardDesText.text = RichTextHelper.ReplaceValues(so.cardDes, player.myPlayer.attack.Value + player.myPlayer.attackEx.Value);
 

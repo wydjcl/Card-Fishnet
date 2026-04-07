@@ -13,12 +13,15 @@ public class Player : Character
     public GameObject cardZone;
     public NetworkPlayer netPlayer;
     public TextMeshPro manaText;
+    public TextMeshPro magicText;
     public readonly SyncVar<int> mana = new SyncVar<int>();
     public readonly SyncVar<int> maxMana = new SyncVar<int>();
+    public readonly SyncVar<int> magic = new SyncVar<int>();
     public readonly SyncVar<int> characterId = new SyncVar<int>();
 
     public int _mana;
     public int _maxMana;
+    public int _magic;
     public int _characterId;
 
     public override void OnStartClient()
@@ -27,8 +30,8 @@ public class Player : Character
         netPlayer = Owner.FirstObject.GetComponent<NetworkPlayer>();//他的网络玩家对象
         if (IsServerStarted)//服务端给他基础属性赋值,需整合
         {
-            maxMana.Value = 10;
-            mana.Value = 10;//初始法力值,需修改
+            maxMana.Value = 3;
+            mana.Value = 3;//初始法力值,需修改
             isPlayer.Value = true;
             InitDataRpc(characterId.Value);//根据角色id改变特殊属性
         }
@@ -44,9 +47,11 @@ public class Player : Character
         }
 
         mana.OnChange += Mana_OnChange;
-
+        magic.OnChange += Magic_OnChange;
         characterSprite.sprite = Resources.Load<Sprite>($"P_{characterId.Value}");
     }
+
+
 
 
     /// <summary>
@@ -58,15 +63,16 @@ public class Player : Character
     {
         if (i == 0)
         {
-            maxHealth.Value = 880;
-            health.Value = 880;
-            attack.Value = 10;
-            defense.Value = 0;
+            maxHealth.Value = 88;
+            health.Value = 88;
+            attack.Value = 6;
+            defense.Value = 10;
         }
         if (i == 1)
         {
-            maxHealth.Value = 77;
-            health.Value = 77;
+            maxHealth.Value = 65;
+            health.Value = 65;
+            attack.Value = 6;
         }
     }
     [ContextMenu("把血量改成999")]
@@ -76,7 +82,15 @@ public class Player : Character
         maxHealth.Value = 999;
         health.Value = 999;
     }
-
+    /// <summary>
+    /// 减少法力值Rpc
+    /// </summary>
+    /// <param name="i"></param>
+    [ServerRpc(RequireOwnership = false)]
+    public void AddManaRpc(int i)
+    {
+        mana.Value += i;
+    }
     /// <summary>
     /// 减少法力值Rpc
     /// </summary>
@@ -123,13 +137,21 @@ public class Player : Character
         _mana = mana.Value;
         if (manaText != null)
         {
-            manaText.text = $"MP:{mana.Value}/{maxMana.Value}";
+            manaText.text = $"行动力:{mana.Value}/{maxMana.Value}";
         }
     }
-
+    private void Magic_OnChange(int prev, int next, bool asServer)
+    {
+        _magic = magic.Value;
+        if (magicText != null)
+        {
+            magicText.text = $"法力值:{magic.Value}";
+        }
+    }
     public override void OnStopClient()
     {
         base.OnStopClient();
         mana.OnChange -= Mana_OnChange;
+        magic.OnChange -= Magic_OnChange;
     }
 }

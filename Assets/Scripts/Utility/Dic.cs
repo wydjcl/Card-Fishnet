@@ -17,6 +17,8 @@ public class Dic : SingletonMono<Dic>
     public List<BuffEffectSO> buffs = new List<BuffEffectSO>();
     [Header("女骑士卡牌数据字典")]
     public List<CardDataSO> P0CardDataSOs = new List<CardDataSO>();
+    [Header("冰女巫卡牌数据字典")]
+    public List<CardDataSO> P1CardDataSOs = new List<CardDataSO>();
     public CardDataSO FindCard(string i)
     {
         foreach (CardDataSO s in cardDataSOs)
@@ -49,23 +51,26 @@ public class Dic : SingletonMono<Dic>
         {
             return P0CardDataSOs.Count;
         }
-
+        if (i == 1)
+        {
+            return P1CardDataSOs.Count;
+        }
         return 0;
     }
     public List<CardDataSO> GetCardsRandom(int characterID, int num)
     {
-        List<CardDataSO> temp;
+        List<CardDataSO> temp = new();
         if (characterID == 0)
         {
             temp = new List<CardDataSO>(P0CardDataSOs);
         }
-        else
+        if (characterID == 1)
         {
-            temp = new List<CardDataSO>(P0CardDataSOs);
+            temp = new List<CardDataSO>(P1CardDataSOs);
         }
 
         if (temp.Count <= num)
-            return new List<CardDataSO>(P0CardDataSOs);
+            return new List<CardDataSO>(P0CardDataSOs);//数量不够
 
 
         System.Random rng = new System.Random();
