@@ -41,15 +41,12 @@ public enum EquipmentType
 
 public enum RoomType
 {
-    Start,
     SmallEnemy,
     BigEnemy,
     Shop,
     Event,
-    Bar,
     Treasure,
     Boss,
-    None
 }
 
 public enum RoomStage

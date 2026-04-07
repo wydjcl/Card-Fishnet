@@ -49,7 +49,10 @@ public class Player : Character
     }
 
 
-
+    /// <summary>
+    /// 初始化角色属性
+    /// </summary>
+    /// <param name="i"></param>
     [ServerRpc(RequireOwnership = false)]
     public void InitDataRpc(int i)
     {
@@ -57,7 +60,7 @@ public class Player : Character
         {
             maxHealth.Value = 880;
             health.Value = 880;
-            attack.Value = 8;
+            attack.Value = 10;
             defense.Value = 0;
         }
         if (i == 1)

@@ -23,6 +23,7 @@ public class NetworkMapSceneManager : NetworkBehaviour
     public TextMeshProUGUI upText;
     public GameObject bagUI;
     public RewardUI rewardUI;
+    public ShopUI shopUI;
     [Header("数据层")]
     public readonly SyncVar<int> seed = new SyncVar<int>();
     public System.Random rng;
@@ -110,12 +111,12 @@ public class NetworkMapSceneManager : NetworkBehaviour
     [Server]
     public void SpawnEnemyTest()
     {
-        int r1 = UnityEngine.Random.Range(0, 3);
+        int r1 = UnityEngine.Random.Range(0, Dic.Instance.enemies.Count);
         var e = Instantiate(Dic.Instance.enemies[r1]);
         e.gameObject.transform.position = new Vector2(6.5f, 2.7f);
         InstanceFinder.ServerManager.Spawn(e);
 
-        int r2 = UnityEngine.Random.Range(0, 3);
+        int r2 = UnityEngine.Random.Range(0, Dic.Instance.enemies.Count);
         var e2 = Instantiate(Dic.Instance.enemies[r2]);
         e2.gameObject.transform.position = new Vector2(0f, 2.7f);
         InstanceFinder.ServerManager.Spawn(e2);
@@ -123,20 +124,31 @@ public class NetworkMapSceneManager : NetworkBehaviour
     [Server]
     public void EndBattle()
     {
-        isBattle = false;
+        //isBattle = false;
         EnableMapChildren();
         UnEnableBattleChildren();
         foreach (var p in BattleManager.Instance.players)
         {
             p.AfterBattle();
         }
-        Debug.Log("展示战斗奖励");
+        //Debug.Log("展示战斗奖励");
         StartRewardRpc();
         //改变房间
-        return;
+        CheckRooms();
+
+    }
+
+    /// <summary>
+    /// 检查是否所有房间都被挑战过了，如果是，则进入下一层，生成新房间,且给房间的投票数清零
+    /// </summary>
+    [Server]
+    public void CheckRooms()
+    {
         var haveUnLock = false;
+        InitRoom();
         foreach (var r in rooms)
         {
+            r.chosenNum.Value = 0;
             if (r.isLock.Value == false)
             {
                 haveUnLock = true;
@@ -150,14 +162,27 @@ public class NetworkMapSceneManager : NetworkBehaviour
                 Destroy(r.gameObject);
             }
             rooms.Clear();
+            level.y += 1;
+            CreateRoom();
         }
         else
         {
             Debug.Log("还有空余房间");
         }
-
     }
-
+    [ObserversRpc]
+    public void InitRoom()
+    {
+        foreach (var r in rooms)
+        {
+            r.isChosen = false;
+            r.chosenText.text = "0";
+            if (r.isLock.Value)
+            {
+                r.chosenText.text = "";
+            }
+        }
+    }
     [ObserversRpc]
     public void StartRewardRpc()
     {
@@ -181,7 +206,12 @@ public class NetworkMapSceneManager : NetworkBehaviour
 
         rewardUI.Init(result);
     }
-
+    [ObserversRpc]
+    public void StartShopRpc()
+    {
+        shopUI.gameObject.SetActive(true);
+        CheckRooms();
+    }
     #endregion
     #region 开关地图节点和战斗节点
     [ObserversRpc]
@@ -211,7 +241,7 @@ public class NetworkMapSceneManager : NetworkBehaviour
     [ObserversRpc]
     public void UnEnableBattleChildren()
     {
-        Debug.Log("关闭战斗UI");
+        //Debug.Log("关闭战斗UI");
         foreach (Transform child in battleUIRoot.transform)
         {
             child.gameObject.SetActive(false);
@@ -221,17 +251,51 @@ public class NetworkMapSceneManager : NetworkBehaviour
     #region 房间相关
     public void CreateRoom()
     {
-        if (level == new Vector2(0, 0))
+        Debug.Log("现在在" + level.y + "层");
+        if (false)
         {
             NetworkObject roomP = Instantiate(roomPrefab);//创建房间,需要修改
             roomP.transform.position = new Vector3(0, 3f, 0);
             Room r = roomP.GetComponent<Room>();
-            r.roomType.Value = RoomType.Start;
+            r.roomType.Value = RoomType.SmallEnemy;
             InstanceFinder.ServerManager.Spawn(roomP);
         }
         else
         {
+            if (true)
+            {
+                var n = rng.Next(1, 4);
+                Debug.Log("生成了" + n + "个房间");
+                for (int i = 0; i < n; i++)
+                {
+                    NetworkObject roomP = Instantiate(roomPrefab);//创建房间,需要修改
+                    if (n == 1)
+                    {
+                        roomP.transform.position = new Vector3(0, 3f, 0);
+                    }
+                    if (n == 2)
+                    {
+                        roomP.transform.position = new Vector3(-2f + 4f * i, 3f, 0);
+                    }
+                    if (n == 3)
+                    {
+                        roomP.transform.position = new Vector3(-4.5f + 4.5f * i, 3f, 0);
+                    }
 
+                    Room r = roomP.GetComponent<Room>();
+                    var ii = rng.Next(1, 3);
+                    if (ii == 1)
+                    {
+                        r.roomType.Value = RoomType.SmallEnemy;
+                    }
+                    else
+                    {
+                        r.roomType.Value = RoomType.Shop;
+                    }
+
+                    InstanceFinder.ServerManager.Spawn(roomP);
+                }
+            }
         }
 
     }

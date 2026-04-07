@@ -849,37 +849,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1113907788}
   m_CullTransparentMesh: 1
---- !u!1 &1168289551
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1168289552}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1168289552
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1168289551}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1411621066
 GameObject:
   m_ObjectHideFlags: 0
@@ -1173,8 +1142,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7f5a567fcf6970b46a198d1bc4956f22, type: 2}
   - {fileID: 11400000, guid: 22e58f431888ef6408cbc629861f491c, type: 2}
   enemies:
-  - {fileID: 6683151337358677847, guid: af1ab8a1830f5e543bfd83fd0ce216b8, type: 3}
-  - {fileID: 6683151337358677847, guid: 55a2299d5d787764a9e7419258f6f2ff, type: 3}
   - {fileID: 6683151337358677847, guid: 65f05abf9272cb2438871fc2511e33e8, type: 3}
   buffs:
   - {fileID: 11400000, guid: 61ee8af62653c8c4b813786902d5a1ed, type: 2}
@@ -1653,4 +1620,3 @@ SceneRoots:
   - {fileID: 1092411792}
   - {fileID: 1644023281}
   - {fileID: 1787691788}
-  - {fileID: 1168289552}

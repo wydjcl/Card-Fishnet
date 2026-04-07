@@ -296,9 +296,12 @@ public class BattleManager : NetworkBehaviour
                 return;//有没死亡的
             }
         }
-
-        ClientWin();
-        networkMapSceneManager.EndBattle();
+        if (networkMapSceneManager.isBattle)
+        {
+            networkMapSceneManager.isBattle = false;
+            ClientWin();
+            networkMapSceneManager.EndBattle();
+        }
     }
     /// <summary>
     /// 玩家客户端获胜后反应
@@ -313,6 +316,7 @@ public class BattleManager : NetworkBehaviour
         }
 
         enemies.Clear();
+        networkMapSceneManager.upText.text = $"地图";
     }
 
 

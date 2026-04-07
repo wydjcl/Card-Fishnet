@@ -15,7 +15,9 @@ MonoBehaviour:
   cardID: 4
   cardName: "\u6218\u4E89\u6012\u543C"
   cardCost: 1
+  cardCoin: 65
   cardType: 1
+  cardQuality: 0
   cardImage: {fileID: 21300000, guid: b57260170826f93488cf1360d335dda2, type: 3}
   cardDes: "\u83B7\u5F971\u70B9\u5632\u8BBD.\u83B7\u5F977\u70B9\u62A4\u7532"
   cardUIDes: 

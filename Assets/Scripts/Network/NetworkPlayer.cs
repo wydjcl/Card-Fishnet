@@ -44,6 +44,7 @@ public class NetworkPlayer : NetworkBehaviour
             name = "玩家体";
         }
         name = "玩家" + Owner.ClientId;//方便测试
+        Dic.Instance.player = this;
         if (IsServerStarted)
         {
             connID.Value = Owner.ClientId;
@@ -205,17 +206,17 @@ public class NetworkPlayer : NetworkBehaviour
                 // 弃牌堆也空 → 没牌可抽，直接停止
                 if (discardDeck.Count == 0)
                 {
-                    Debug.Log("抽牌堆和弃牌堆都空了，无法继续抽牌");
+                    //Debug.Log("抽牌堆和弃牌堆都空了，无法继续抽牌");
                     break;
                 }
-                Debug.Log("抽牌堆为空,洗牌");
+                //Debug.Log("抽牌堆为空,洗牌");
                 // 洗回抽牌堆
                 ShuffleDiscardIntoDraw();
             }
             // 洗牌后仍然空 → 安全退出
             if (drawDeck.Count == 0)
             {
-                Debug.Log("洗牌后抽牌堆仍为空");
+                //Debug.Log("洗牌后抽牌堆仍为空");
                 break;
             }
             // 现在抽牌堆一定有牌，抽一张
